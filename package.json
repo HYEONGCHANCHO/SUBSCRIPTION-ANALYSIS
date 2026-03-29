@@ -1,0 +1,39 @@
+{
+  "name": "subscription-analysis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "npx ts-node backend/src/main.ts ALL",
+    "start:home": "npx ts-node backend/src/main.ts HOME",
+    "start:lh": "npx ts-node backend/src/main.ts LH",
+    "scrape": "npx ts-node backend/src/main.ts ALL SCRAPE",
+    "scrape:home": "npx ts-node backend/src/main.ts HOME SCRAPE",
+    "scrape:lh": "npx ts-node backend/src/main.ts LH SCRAPE",
+    "analyze:ai": "npx ts-node backend/src/analyze-cli.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@types/pdf-parse": "^1.1.5",
+    "axios": "^1.13.6",
+    "better-sqlite3": "^12.8.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.3.1",
+    "pdf-parse": "^1.1.1",
+    "playwright": "^1.58.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.5.0"
+  }
+}
