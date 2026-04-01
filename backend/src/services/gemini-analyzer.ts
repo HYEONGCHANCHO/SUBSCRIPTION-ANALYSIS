@@ -12,7 +12,23 @@ export interface MatchedType {
 
 export interface AiAnalysisResult {
   isMatch: boolean;
+  applyDate: string;
   matchedTypes: MatchedType[];
+  eligibility: {
+    isEligible: boolean;
+    detail: string;
+  };
+  regulations: {
+    transferRestriction: string;
+    residenceObligation: string;
+  };
+  marketAnalysis: {
+    attractiveness: string;
+  };
+  commute: {
+    toDongcheon: string;
+    toNonhyeon: string;
+  };
   summary: string;
 }
 
@@ -23,8 +39,8 @@ export class GeminiAnalyzer {
 
   constructor(apiKey: string) {
     this.genAI = new GoogleGenerativeAI(apiKey);
-    // 유료 계정의 혜택을 온전히 받기 위해 최신 모델인 gemini-flash-latest 사용
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    // 쿼터 안정성이 높고 최신 분석 성능을 갖춘 gemini-2.0-flash 모델 사용
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     this.configPrompt = this.loadConfig();
   }
 
@@ -59,8 +75,8 @@ export class GeminiAnalyzer {
 
         if (!text) throw new Error('No text extracted');
 
-        // 프롬프트 크기 최적화 (토큰 효율성)
-        const truncatedText = text.substring(0, 50000);
+        // Pro 모델의 긴 컨텍스트 지원을 활용하여 분석 정밀도 향상
+        const truncatedText = text.substring(0, 60000);
 
         const prompt = `
 ${this.configPrompt}
