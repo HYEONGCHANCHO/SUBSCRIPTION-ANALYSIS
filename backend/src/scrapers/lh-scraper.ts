@@ -6,7 +6,7 @@ import * as fs from 'fs';
 export class LHScraper implements IScraper {
     private url: string = 'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?mi=1026';
     private baseDownloadDir: string = path.resolve(process.cwd(), 'backend/data/downloads/LH');
-    private gyeonggiExcludes = ['부천', '평택', '안성', '구리', '남양주', '양주', '동두천', '하남', '김포', '인천', '파주', '청년 전세임대', '가정어린이집'];
+    private gyeonggiExcludes = ['부천', '안성', '구리', '남양주', '양주', '동두천', '하남', '김포', '인천', '파주', '청년 전세임대', '가정어린이집'];
     private seoulExcludes = ['청년 전세임대'];
     public onProgress?: (progress: number, status: string) => void;
 
