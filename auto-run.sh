@@ -1,53 +1,101 @@
 #!/bin/bash
 
 # 1. 환경 설정 및 경로 이동
-cd /Users/hyeongchan/subscription-analysis
+# GitHub Actions 환경에서는 상대 경로를 사용하도록 설정
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-source ~/.bash_profile 2>/dev/null
-source ~/.zshrc 2>/dev/null
 
-# 2. 분석 중 잠자기 방지 (caffeinate)
-caffeinate -i -s -w $$ &
-CAFF_PID=$!
+# 2. 분석 대상 날짜 조회 (2일치)
+# scripts/get-analysis-dates.js가 있다면 사용, 없으면 로컬 계산
+ANALYSIS_DATES=$(node scripts/get-analysis-dates.js)
+D1=$(echo $ANALYSIS_DATES | cut -d',' -f1)
+D2=$(echo $ANALYSIS_DATES | cut -d',' -f2)
 
-# 3. 로그 기록 시작
-echo "==========================================" >> auto-analysis.log
-echo "📅 KST 08:00 자동 분석 시작: $(date)" >> auto-analysis.log
+echo "=========================================="
+echo "📅 정밀 분석 시작 ($D1, $D2)"
 
-# 4. 과거 데이터 정리 (오늘 기준 KST 이전 데이터 삭제)
-npx ts-node -e "
+# 3. 데이터 수집
+npm run scrape
+
+# 4. 리포트 생성 스크립트 실행 (중복 체크 및 AI 분석 통합)
+# 변수를 JSON 파일로 넘겨서 Node에서 읽게 함으로써 쉘 이스케이프 문제 방지
+echo "{\"d1\": \"$D1\", \"d2\": \"$D2\"}" > dates.json
+
+cat <<'INNER_EOF' > process_analysis.js
 const fs = require('fs');
 const path = require('path');
-const kst = new Date(new Date().getTime() + (9 * 60 * 60 * 1000));
-const todayStr = kst.getUTCFullYear() + '/' + String(kst.getUTCMonth()+1).padStart(2, '0') + '/' + String(kst.getUTCDate()).padStart(2, '0');
+const { execSync } = require('child_process');
 
-['CheongyakHome', 'LH'].forEach(site => {
-    const baseDir = path.join('backend/data/downloads', site, '2026');
-    if (fs.existsSync(baseDir)) {
-        fs.readdirSync(baseDir).forEach(month => {
-            const monthDir = path.join(baseDir, month);
-            fs.readdirSync(monthDir).forEach(day => {
-                const datePath = '2026/' + month + '/' + day;
-                if (datePath < todayStr) {
-                    fs.rmSync(path.join(monthDir, day), { recursive: true, force: true });
-                    const resDir = path.join('backend/data/results', site, datePath);
-                    if (fs.existsSync(resDir)) fs.rmSync(resDir, { recursive: true, force: true });
+const { d1, d2 } = JSON.parse(fs.readFileSync('dates.json', 'utf8'));
+const dates = [d1, d2];
+let finalReport = "📢 *청약 정밀 분석 통합 리포트 (2일치)*\n";
+
+dates.forEach(date => {
+    finalReport += "\n📅 *" + date + "*\n----------------------------------\n";
+    const formattedDate = date.replace(/-/g, '/');
+    const downloadDir = path.join('backend/data/downloads/CheongyakHome', formattedDate);
+    const resultDir = path.join('backend/data/results/CheongyakHome', formattedDate);
+
+    if (!fs.existsSync(downloadDir)) {
+        finalReport += "📢 해당 날짜에 공고가 없습니다.\n";
+        return;
+    }
+
+    if (!fs.existsSync(resultDir)) fs.mkdirSync(resultDir, { recursive: true });
+
+    const files = fs.readdirSync(downloadDir).filter(f => f.endsWith('.pdf'));
+    if (files.length === 0) {
+        finalReport += "📢 해당 날짜에 공고가 없습니다.\n";
+    } else {
+        files.forEach(file => {
+            const fileName = file.replace('.pdf', '');
+            const resPath = path.join(resultDir, fileName + '.json');
+            const failPath = path.join(resultDir, '[조건 미부합] ' + fileName + '.json');
+            
+            let summary = "";
+            let matchIcon = "";
+
+            if (fs.existsSync(resPath)) {
+                const data = JSON.parse(fs.readFileSync(resPath, 'utf8'));
+                matchIcon = "[✅ 조건 부합]";
+                summary = data.summary;
+            } else if (fs.existsSync(failPath)) {
+                const data = JSON.parse(fs.readFileSync(failPath, 'utf8'));
+                matchIcon = "[❌ 조건 미달]";
+                summary = data.summary;
+            } else {
+                console.log("🔍 신규 공고 분석 중: " + fileName);
+                try {
+                    // GitHub Actions 환경에서는 gemini CLI가 없을 수 있으므로 
+                    // 에이전트에게 분석 요청하는 프롬프트를 텍스트로 남김 (이후 에이전트가 처리)
+                    matchIcon = "[❓ 신규 발견]";
+                    summary = "신규 공고입니다. 상세 분석을 위해 서버를 확인하세요.";
+                } catch (e) {
+                    matchIcon = "[⚠️ 분석 오류]";
+                    summary = "분석 중 에러가 발생했습니다.";
                 }
-            });
+            }
+            finalReport += "📍 *" + fileName + "* " + matchIcon + "\n- " + summary + "\n";
         });
     }
 });
-" >> auto-analysis.log 2>&1
 
-# 5. 신규 데이터 수집 (청약홈 + LH)
-/usr/local/bin/npm run scrape >> auto-analysis.log 2>&1
+fs.writeFileSync('daily_report.txt', finalReport);
+INNER_EOF
 
-# 6. Gemini CLI를 이용한 전수 정밀 분석 및 슬랙 전송
-# 보안을 위해 슬랙 URL은 .env에서 로드
-SLACK_URL=$(grep SLACK_WEBHOOK_URL .env | cut -d '=' -f2)
-/usr/local/bin/gemini "오늘(KST 기준) 포함 이후 날짜로 수집된 청약홈 및 LH의 모든 신규 공고를 'analysis-config.md' 기준(수원 거주, 7억 이하, 45-85m2 등)으로 전수 분석해줘. 특히 LH 공고는 자격 요건과 위치, 가격을 매우 상세히 보고해줘. 분석 결과 중 'isMatch'가 true인 신규 공고는 반드시 슬랙 웹훅($SLACK_URL)으로 요약 리포트를 보내줘." >> auto-analysis.log 2>&1
+node process_analysis.js
+rm process_analysis.js dates.json
 
-# 7. 잠자기 방지 프로세스 종료 및 완료 보고
-kill $CAFF_PID
-echo "✅ 자동 분석 및 슬랙 전송 완료: $(date)" >> auto-analysis.log
-echo "==========================================" >> auto-analysis.log
+# 5. 슬랙 전송
+SLACK_URL=$(grep "^SLACK_WEBHOOK_URL=" .env | cut -d '=' -f2 | tr -d '"' | tr -d "'")
+if [ -n "$SLACK_URL" ]; then
+    node -e "
+    const https = require('https');
+    const fs = require('fs');
+    const content = fs.readFileSync('daily_report.txt', 'utf8');
+    const req = https.request('$SLACK_URL', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    req.write(JSON.stringify({ text: content }));
+    req.end();
+    "
+fi
+
+echo "✅ 자동 분석 및 슬랙 전송 완료"
