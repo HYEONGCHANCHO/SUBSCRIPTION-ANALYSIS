@@ -2,15 +2,12 @@ name: Daily Subscription Analysis
 
 on:
   schedule:
-    # 월~금 한국 시간 오전 8시 (UTC 일~목 23:00)
     - cron: "0 23 * * 0-4"
   workflow_dispatch:
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
