@@ -2,6 +2,7 @@ import { chromium, Page, Browser, BrowserContext, Frame, Download } from 'playwr
 import { db } from '../database/schema';
 import * as path from 'path';
 import * as fs from 'fs';
+import { getTargetDates } from '../utils/date-utils';
 
 export class HomeScraper {
     private url: string = 'https://www.applyhome.co.kr/ai/aib/selectSubscrptCalenderView.do';
@@ -9,6 +10,9 @@ export class HomeScraper {
     public onProgress?: (progress: number, status: string) => void;
 
     async scrape(): Promise<void> {
+        const targetDates = getTargetDates(3);
+        const lastTargetDate = new Date(targetDates[targetDates.length - 1]);
+        
         const browser: Browser = await chromium.launch({ headless: true }); 
         const context: BrowserContext = await browser.newContext({
             viewport: { width: 1280, height: 1000 },
@@ -28,12 +32,9 @@ export class HomeScraper {
                 } catch (e) {}
             }
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
             let continueSearching = true;
             let monthLoopCount = 0;
-            const maxMonths = 3; 
+            const maxMonths = 2; // 타겟 날짜가 3영업일이면 2개월이면 충분
 
             while (continueSearching && monthLoopCount < maxMonths) {
                 await this.applyFiltersIfNecessary(targetPage, page);
@@ -44,13 +45,19 @@ export class HomeScraper {
                     return { year: parseInt(year), month: parseInt(month) };
                 });
                 
+                // 현재 월이 마지막 타겟 날짜의 월보다 한참 뒤라면 중단
+                if (new Date(currentYM.year, currentYM.month - 1, 1) > lastTargetDate) {
+                    continueSearching = false;
+                    break;
+                }
+
                 const noticePattern = /\d{4}년 \d{2}월 \d{1,2}일.+/;
                 const noticeElements = targetPage.locator('.cal_lb, a').filter({ 
                     hasText: noticePattern
                 }).filter({ visible: true });
                 
                 const count = await noticeElements.count();
-                let lastNoticeDayInMonth = 0;
+                let lastNoticeDateInMonth: Date | null = null;
 
                 for (let i = 0; i < count; i++) {
                     const overallProgress = ((monthLoopCount / maxMonths) * 100) + (((i + 1) / count) * (100 / maxMonths));
@@ -58,16 +65,18 @@ export class HomeScraper {
                     const fullText = (await label.textContent())?.trim() || '';
                     const title = fullText.replace(/^\d{4}년 \d{2}월 \d{1,2}일/, '').trim();
                     
-                    this.onProgress?.(overallProgress, `${currentYM.month}월: ${title}`);
-
                     const dayStr = await label.evaluate((el) => el.closest('td')?.querySelector('span')?.textContent?.trim());
                     if (!dayStr || isNaN(parseInt(dayStr))) continue;
 
                     const dayNum = parseInt(dayStr);
                     const noticeDate = new Date(currentYM.year, currentYM.month - 1, dayNum);
-                    if (dayNum > lastNoticeDayInMonth) lastNoticeDayInMonth = dayNum;
+                    const dateStr = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, '0')}-${String(noticeDate.getDate()).padStart(2, '0')}`;
+                    
+                    if (!lastNoticeDateInMonth || noticeDate > lastNoticeDateInMonth) lastNoticeDateInMonth = noticeDate;
 
-                    if (noticeDate < today) continue;
+                    if (!targetDates.includes(dateStr)) continue;
+
+                    this.onProgress?.(overallProgress, `${currentYM.month}월: ${title}`);
 
                     const dateDir = path.join(this.baseDownloadDir, noticeDate.getFullYear().toString(), String(noticeDate.getMonth() + 1).padStart(2, '0'), String(noticeDate.getDate()).padStart(2, '0'));
                     if (!fs.existsSync(dateDir)) fs.mkdirSync(dateDir, { recursive: true });
@@ -75,13 +84,13 @@ export class HomeScraper {
                     await this.processNoticeStrictly(targetPage, page, label, dateDir, title.replace(/[/\\?%*:|"<>]/g, '-'));
                 }
 
-                const lastDayOfMonth = new Date(currentYM.year, currentYM.month, 0).getDate();
-                if (lastNoticeDayInMonth >= lastDayOfMonth - 2 || (monthLoopCount === 0 && count > 0)) {
+                // 이번 달의 마지막 공고 날짜가 이미 마지막 타겟 날짜를 넘었다면 다음 달로 갈 필요 없음
+                if (lastNoticeDateInMonth && lastNoticeDateInMonth >= lastTargetDate) {
+                    continueSearching = false;
+                } else {
                     const moveResult = await this.goToNextMonth(targetPage, page);
                     continueSearching = moveResult.success;
                     if (continueSearching) monthLoopCount++;
-                } else {
-                    continueSearching = false;
                 }
             }
             this.onProgress?.(100, '수집 완료');

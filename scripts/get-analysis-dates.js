@@ -1,24 +1,22 @@
-function getKstNow() {
+function getTargetDates(count = 3) {
+    const dates = [];
     const now = new Date();
-    return new Date(now.getTime() + (9 * 60 * 60 * 1000));
-}
+    // KST 보정 (GitHub Action 환경 대응)
+    const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    let current = new Date(kst.getFullYear(), kst.getMonth(), kst.getDate());
 
-function isWeekend(date) {
-    const day = date.getUTCDay(); // 0: 일요일, 6: 토요일
-    return day === 0 || day === 6;
-}
-
-let dates = [];
-let current = getKstNow();
-
-// 시간을 00:00:00으로 맞춤 (날짜 비교 정확도)
-current.setUTCHours(0, 0, 0, 0);
-
-while (dates.length < 2) {
-    if (!isWeekend(current)) {
-        dates.push(current.toISOString().split('T')[0]);
+    while (dates.length < count) {
+        const day = current.getDay();
+        if (day !== 0 && day !== 6) { // 토, 일 제외
+            const y = current.getFullYear();
+            const m = String(current.getMonth() + 1).padStart(2, '0');
+            const d = String(current.getDate()).padStart(2, '0');
+            dates.push(`${y}-${m}-${d}`);
+        }
+        current.setDate(current.getDate() + 1);
     }
-    current.setUTCDate(current.getUTCDate() + 1);
+    return dates;
 }
 
+const dates = getTargetDates(3);
 console.log(dates.join(','));

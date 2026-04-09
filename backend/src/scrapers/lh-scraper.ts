@@ -2,6 +2,7 @@ import { chromium, Page, Browser, BrowserContext, Frame, Download } from 'playwr
 import { IScraper } from './scraper-interface';
 import * as path from 'path';
 import * as fs from 'fs';
+import { getTargetDates, isTargetDate } from '../utils/date-utils';
 
 export class LHScraper implements IScraper {
     private url: string = 'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?mi=1026';
@@ -19,8 +20,9 @@ export class LHScraper implements IScraper {
         const page: Page = await context.newPage();
 
         try {
-            await this.processRegion(page, '경기도', '41', this.gyeonggiExcludes, 0, 80);
-            await this.processRegion(page, '서울특별시', '11', this.seoulExcludes, 80, 100);
+            const targetDates = getTargetDates(3);
+            await this.processRegion(page, '경기도', '41', this.gyeonggiExcludes, 0, 80, targetDates);
+            await this.processRegion(page, '서울특별시', '11', this.seoulExcludes, 80, 100, targetDates);
             this.onProgress?.(100, '수집 완료');
         } catch (error) {
         } finally {
@@ -28,7 +30,7 @@ export class LHScraper implements IScraper {
         }
     }
 
-    private async processRegion(page: Page, regionName: string, regionValue: string, excludes: string[], startProg: number, endProg: number) {
+    private async processRegion(page: Page, regionName: string, regionValue: string, excludes: string[], startProg: number, endProg: number, targetDates: string[]) {
         this.onProgress?.(startProg + 2, `${regionName} 이동 중...`);
         await page.goto(this.url, { waitUntil: 'networkidle' });
 
@@ -64,13 +66,24 @@ export class LHScraper implements IScraper {
             const currentProgress = startProg + 5 + (i * stepSize);
             
             const row = rows.nth(i);
+            
+            // 행 데이터에서 날짜 확인 (최적화)
+            const rowText = await row.innerText();
+            const dateMatch = rowText.match(/(\d{4})[\.-](\d{2})[\.-](\d{2})/);
+            if (dateMatch) {
+                const rowDate = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+                if (!targetDates.includes(rowDate)) {
+                    // 타겟 날짜가 아니면 바로 건너뜀 (상세 페이지 진입 안함)
+                    continue;
+                }
+            }
+
             const link = row.locator('a').first();
             if (await link.count() === 0) continue;
             
             const title = (await link.textContent())?.trim() || '';
             if (!title || title.length < 5 || title.includes('결과가 없습니다')) continue;
             if (excludes.some(k => title.includes(k))) {
-                this.onProgress?.(currentProgress, `제외: ${title}`);
                 continue;
             }
             if (processedTitles.has(title)) continue;
@@ -94,8 +107,8 @@ export class LHScraper implements IScraper {
                 
                 const noticeDateInfo = await detailTarget.evaluate(() => {
                     const parseDate = (text: string) => {
-                        const dateMatch = text.match(/(\d{4})[\.-년](\d{2})[\.-월](\d{2})[일]?/);
-                        return dateMatch ? { y: dateMatch[1], m: dateMatch[2], d: dateMatch[3] } : null;
+                        const dm = text.match(/(\d{4})[\.-년](\d{2})[\.-월](\d{2})[일]?/);
+                        return dm ? { y: dm[1], m: dm[2], d: dm[3] } : null;
                     };
                     const ths = Array.from(document.querySelectorAll('th'));
                     const dateTh = ths.find(th => /공고일|게시일/.test(th.textContent || ''));

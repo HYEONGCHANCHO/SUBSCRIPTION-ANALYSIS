@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
+import { getTargetDates } from '../utils/date-utils';
 const pdf = require('pdf-parse');
 
 export interface AnalysisResult {
@@ -20,11 +21,17 @@ export class Analyzer {
     private processedHashes: Set<string> = new Set();
 
     async analyzeAll(): Promise<AnalysisResult[]> {
+        const targetDates = getTargetDates(3);
         const results: AnalysisResult[] = [];
         const files = this.getAllFiles(this.baseDownloadDir);
         
         for (const file of files) {
-            if (path.extname(file).toLowerCase() !== '.pdf') continue;
+            if (path.extname(file).toLowerCase() !== '.pdf' && path.extname(file).toLowerCase() !== '.hwpx' && path.extname(file).toLowerCase() !== '.hwp') continue;
+
+            // 파일 경로에서 날짜 추출 (YYYY/MM/DD 형태인지 확인)
+            const pathParts = file.split(path.sep);
+            const datePart = pathParts.slice(-4, -1).join('-'); // YYYY-MM-DD
+            if (!targetDates.includes(datePart)) continue;
 
             const contentHash = this.getFileHash(file);
             if (this.processedHashes.has(contentHash)) continue;
