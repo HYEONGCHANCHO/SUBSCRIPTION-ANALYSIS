@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # 결과 저장을 위한 쓰기 권한 필수
+  contents: write
 
 env:
+  # 모든 액션을 Node.js 24에서 실행하도록 강제 (충돌 방지를 위해 하나만 설정)
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
   analyze:
@@ -45,7 +45,6 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          # .env 파일 생성
           echo "SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL" > .env
           chmod +x auto-run.sh
           ./auto-run.sh
@@ -55,10 +54,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add backend/data/results/
-          # 변경사항이 있을 때만 커밋 및 푸시 (develop 브랜치 자동 감지)
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-update analysis results [skip ci]"
-            git push
+            git push origin develop
           else
             echo "No new results to commit."
           fi
