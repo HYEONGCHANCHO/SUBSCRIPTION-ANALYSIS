@@ -6,6 +6,8 @@ on:
   workflow_dispatch:
 
 env:
+  # 구형 Node.js 액션 실행을 허용하고 24 버전으로의 전환을 승인함
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -13,9 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4 # v4는 내부적으로 최신 노드를 지원하도록 업데이트됨
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
