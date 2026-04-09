@@ -15,7 +15,7 @@ yarn-error.log*
 # Databases & Data
 backend/data/subscription.db
 backend/data/downloads/
-backend/data/results/
+# backend/data/results/ (결과물은 저장하여 중복 분석 방지)
 
 # OS specific files
 .DS_Store

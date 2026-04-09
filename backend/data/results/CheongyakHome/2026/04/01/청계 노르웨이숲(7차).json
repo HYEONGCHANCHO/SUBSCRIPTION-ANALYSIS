@@ -1,0 +1,28 @@
+{
+  "isMatch": true,
+  "applyDate": "2026-04-01",
+  "matchedTypes": [
+    {
+      "type": "59C",
+      "area": 59.8,
+      "price": "7.2억",
+      "reason": "서울 입지로 7억을 소폭 상회하지만 면적 조건은 부합"
+    }
+  ],
+  "eligibility": {
+    "isEligible": true,
+    "detail": "전국 무주택 세대주 신청 가능. (서울 무순위 사후)"
+  },
+  "regulations": {
+    "transferRestriction": "1년",
+    "residenceObligation": "없음"
+  },
+  "marketAnalysis": {
+    "attractiveness": "동대문구 청계천 라인으로 주변 시세 대비 보합세 수준"
+  },
+  "commute": {
+    "toDongcheon": "약 1시간 (지하철 2호선-신분당선 환승)",
+    "toNonhyeon": "약 45분 (버스 및 지하철 이용 시 원활)"
+  },
+  "summary": "서울 강북권 진입을 노리는 무주택자에게 적합한 무순위 공고"
+}

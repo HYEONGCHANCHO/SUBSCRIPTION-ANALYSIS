@@ -1,0 +1,28 @@
+{
+  "isMatch": true,
+  "applyDate": "2026-04-07",
+  "matchedTypes": [
+    {
+      "type": "59A",
+      "area": 59.9,
+      "price": "6.8억",
+      "reason": "7억 미만 분양가 및 전용 59㎡ 평형 부합"
+    }
+  ],
+  "eligibility": {
+    "isEligible": true,
+    "detail": "수도권 무주택 거주자 청약 가능. 수원 거주자도 1순위 신청 가능."
+  },
+  "regulations": {
+    "transferRestriction": "1년",
+    "residenceObligation": "없음"
+  },
+  "marketAnalysis": {
+    "attractiveness": "안양 신축 시세(8~9억) 대비 충분한 메리트 보유. 실거주 의무 없어 투자성 우수"
+  },
+  "commute": {
+    "toDongcheon": "약 45분 (자동차/버스 이용 시 수월)",
+    "toNonhyeon": "약 1시간 15분 (지하철 1호선 환승)"
+  },
+  "summary": "수원 출퇴근이 용이한 안양 중심지 신축 브랜드 대단지"
+}

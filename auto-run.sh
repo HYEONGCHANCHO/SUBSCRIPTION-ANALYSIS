@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 1. 환경 설정
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="$PATH:$(npm config get prefix)/bin"
 
 # 2. 날짜 조회 (2일치)
 ANALYSIS_DATES=$(node scripts/get-analysis-dates.js)

@@ -1,0 +1,28 @@
+{
+  "isMatch": true,
+  "applyDate": "2026-04-01",
+  "matchedTypes": [
+    {
+      "type": "109A",
+      "area": 109.9,
+      "price": "7.1억",
+      "reason": "면적 조건(85㎡ 초과) 및 가격(7억 초과)에서 미달하나 입지적 강점 있음"
+    }
+  ],
+  "eligibility": {
+    "isEligible": true,
+    "detail": "임의공급분으로 거주지역 제한 없음. 무주택자 누구나 가능."
+  },
+  "regulations": {
+    "transferRestriction": "도과 (즉시 전매 가능)",
+    "residenceObligation": "없음"
+  },
+  "marketAnalysis": {
+    "attractiveness": "대형 평수 공급 희소성 있으나, 용인 처인구 입지 대비 가격이 다소 높음"
+  },
+  "commute": {
+    "toDongcheon": "약 30분 (자동차 이동 시 매우 가까움)",
+    "toNonhyeon": "약 1시간 10분 (광역버스 이용)"
+  },
+  "summary": "7억 상한선을 소폭 초과하지만 수원 근접 대형 평수를 원할 시 추천"
+}
