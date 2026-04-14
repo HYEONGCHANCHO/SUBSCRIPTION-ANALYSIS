@@ -56,7 +56,8 @@ jobs:
           git add backend/data/results/
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-update analysis results [skip ci]"
-            git push origin develop
+            # 현재 실행 중인 브랜치로 자동 푸시 (main 등)
+            git push origin HEAD:${{ github.ref_name }}
           else
             echo "No new results to commit."
           fi
