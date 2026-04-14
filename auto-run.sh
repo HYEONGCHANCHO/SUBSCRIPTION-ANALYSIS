@@ -172,11 +172,18 @@ async function run() {
                 if (fs.existsSync(resPath)) {
                     try {
                         const data = JSON.parse(fs.readFileSync(resPath, 'utf8'));
-                        matchIcon = "[✅ 조건 부합]";
+                        matchIcon = (data.isHeuristic ? "[✅ 약식 통과]" : "[✅ 조건 부합]");
                         summary = data.summary || "요약 정보 없음";
                         log("   ✅ 기존 결과 활용 (성공): " + fileName);
+
+                        // 기존 결과가 성공인 경우에도 링크 추가
+                        const baseUrl = "https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/develop/";
+                        const filePath = path.join(downloadDir, file);
+                        const encodedPath = filePath.split(path.sep).map(p => encodeURIComponent(p)).join('/');
+                        summary += "\n   - 📄 *공고문 원본:* " + baseUrl + encodedPath;
                     } catch(e) { matchIcon = "[⚠️ 데이터 오류]"; log("   ❌ JSON 파싱 에러: " + fileName); }
                 } else if (fs.existsSync(failPath)) {
+
                     try {
                         const data = JSON.parse(fs.readFileSync(failPath, 'utf8'));
                         matchIcon = "[❌ 조건 미달]";
@@ -226,6 +233,14 @@ async function run() {
                         const savePath = isMatch ? resPath : failPath;
                         fs.writeFileSync(savePath, JSON.stringify(result, null, 2));
                         log("      - 분석 완료: " + matchIcon);
+                        
+                        // 🔗 조건 부합 시 공고문 원본 링크 추가
+                        if (isMatch) {
+                            const baseUrl = "https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/develop/";
+                            // URL 이스케이프 (공백 -> %20 등)
+                            const encodedPath = filePath.split(path.sep).map(p => encodeURIComponent(p)).join('/');
+                            summary += "\n   - 📄 *공고문 원본:* " + baseUrl + encodedPath;
+                        }
                     } else {
                         matchIcon = "[⚠️ 분석 실패]";
                         summary = "AI 및 약식 분석 모두 실패 (파일 확인 필요)";
