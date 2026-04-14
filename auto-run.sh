@@ -22,6 +22,7 @@ cat <<'INNER_EOF' > process_analysis.js
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const pdf = require('pdf-parse'); // pdf-parse 활용
 
 const { d1, d2, d3 } = JSON.parse(fs.readFileSync('dates.json', 'utf8'));
 const dates = [d1, d2, d3];
@@ -39,8 +40,60 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// PDF에서 유의미한 텍스트만 추출하는 함수
+async function extractRelevantText(filePath) {
+    if (!filePath.toLowerCase().endsWith('.pdf')) return null;
+    try {
+        const dataBuffer = fs.readFileSync(filePath);
+        const data = await pdf(dataBuffer);
+        const fullText = data.text;
+        
+        // 핵심 키워드 정의 (공고문의 핵심 정보를 포함하는 문장/문단만 추출)
+        const keywords = [
+            '공급대상', '공급규모', '공급금액', '분양가', '임대보증금', '월임대료', 
+            '신청자격', '입주자 선정', '당첨자 발표', '청약일정', '전용면적', 
+            '전매제한', '거주의무', '재당첨', '특별공급', '일반공급'
+        ];
+        
+        const lines = fullText.split('\n');
+        const filteredLines = [];
+        let contextBuffer = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line.length < 5) continue;
+
+            const hasKeyword = keywords.some(k => line.includes(k));
+            if (hasKeyword) {
+                // 키워드 발견 시 앞뒤 2문장씩 포함하여 문맥 유지
+                const start = Math.max(0, i - 2);
+                const end = Math.min(lines.length, i + 3);
+                for (let j = start; j < end; j++) {
+                    const l = lines[j].trim();
+                    if (!contextBuffer.includes(l)) contextBuffer.push(l);
+                }
+            }
+            
+            // 버퍼가 너무 커지면 중간에 한번씩 비워줌 (중복 방지 및 토큰 절약)
+            if (contextBuffer.length > 50) {
+                filteredLines.push(...contextBuffer);
+                contextBuffer = [];
+            }
+        }
+        filteredLines.push(...contextBuffer);
+
+        // 최대 4000자 정도로 제한 (AI 분석에 충분한 정보량)
+        const result = filteredLines.join('\n').substring(0, 4500);
+        log("      ✅ PDF 텍스트 추출 완료 (원본 대비 약 " + Math.round((result.length / fullText.length) * 100) + "% 크기)");
+        return result;
+    } catch (e) {
+        log("      ⚠️ PDF 텍스트 추출 실패: " + e.message);
+        return null;
+    }
+}
+
 async function run() {
-    log("🚀 분석 프로세스 시작 (3영업일 대상, Rate Limit 방지 10초 대기 적용)");
+    log("🚀 분석 프로세스 시작 (3영업일 대상, PDF 전처리 최적화 적용)");
     let finalReport = "📢 *청약 정밀 분석 통합 리포트 (KST 3영업일)*\n";
 
     for (const date of dates) {
@@ -92,17 +145,30 @@ async function run() {
                 } else {
                     log("   🔍 신규 분석 시작: " + fileName + " (" + site + ")");
                     try {
+                        const filePath = path.join(downloadDir, file);
+                        const extractedText = await extractRelevantText(filePath);
+                        
                         // Rate Limit 방지를 위해 각 분석 전 10초 대기
                         log("      - 10초 대기 중... (Rate Limit 방지)");
                         await sleep(10000);
 
-                        const filePath = path.join(downloadDir, file);
-                        const prompt = "파일 '" + filePath + "'의 내용을 'analysis-config.md' 기준으로 정밀 분석해서 결과를 JSON으로 출력해줘. 결과는 반드시 matchedTypes, eligibility, summary 등을 포함해야 해. 다른 부연 설명 없이 JSON만 출력해.";
+                        let prompt = "";
+                        let inputForGemini = "";
+
+                        if (extractedText) {
+                            // 텍스트가 추출된 경우 (PDF)
+                            inputForGemini = extractedText;
+                            prompt = "아래 청약 공고문 텍스트를 바탕으로 'analysis-config.md' 기준에 부합하는지 정밀 분석해줘. 결과는 반드시 JSON 형식으로 matchedTypes, eligibility, summary 등을 포함해야 해. 다른 부연 설명 없이 JSON만 출력해.\n\n[공고문 텍스트]\n" + inputForGemini;
+                        } else {
+                            // 텍스트 추출 실패 시 (HWP 등) 기존처럼 파일 직접 분석 시도
+                            inputForGemini = filePath;
+                            prompt = "파일 '" + inputForGemini + "'의 내용을 'analysis-config.md' 기준으로 정밀 분석해서 결과를 JSON으로 출력해줘. 결과는 반드시 matchedTypes, eligibility, summary 등을 포함해야 해. 다른 부연 설명 없이 JSON만 출력해.";
+                        }
                         
-                        const safePrompt = prompt.replace(/"/g, '\\"');
+                        const safePrompt = prompt.replace(/"/g, '\\"').replace(/`/g, '\\`');
                         const cmd = "gemini \"" + safePrompt + "\"";
                         
-                        log("      - 명령어 실행: " + cmd.substring(0, 100) + "...");
+                        log("      - Gemini 분석 요청 중...");
                         const output = execSync(cmd, { 
                             encoding: 'utf8', 
                             timeout: 120000 
@@ -113,7 +179,7 @@ async function run() {
                         
                         if (jsonMatch) {
                             const result = JSON.parse(jsonMatch[0]);
-                            const isMatch = result.isMatch === true || result.eligibility === 'eligible' || result.eligibility === 'PASSED';
+                            const isMatch = result.isMatch === true || result.eligibility === 'eligible' || result.eligibility === 'PASSED' || result.eligibility === 'PASS';
                             matchIcon = isMatch ? "[✅ 조건 부합]" : "[❌ 조건 미달]";
                             summary = result.summary || "요약 생성 실패";
                             const savePath = isMatch ? resPath : failPath;
@@ -124,8 +190,6 @@ async function run() {
                         }
                     } catch (e) {
                         log("      ❌ 분석 실패 (" + fileName + "): " + e.message);
-                        if (e.stdout) log("      - STDOUT: " + e.stdout);
-                        if (e.stderr) log("      - STDERR: " + e.stderr);
                         matchIcon = "[⚠️ 분석 실패/대기]";
                         summary = "분석 중 오류 발생 또는 타임아웃 (수동 확인 필요)";
                     }
