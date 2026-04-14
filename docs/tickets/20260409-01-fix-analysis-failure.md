@@ -7,15 +7,13 @@
 ## 2. 현재 상태
 - **문제점:** `auto-run.sh` 내 `gemini` CLI 호출 시 예외 발생
 - **현상:** 슬랙 리포트에 `[⚠️ 분석 실패/대기]` 다수 발생
-- **가설:**
-    1. 쉘 명령어 실행 시 파일 경로의 따옴표/공백 처리 미흡
-    2. Gemini 응답의 JSON 파싱 정규표현식 취약
-    3. 상세 로깅 부재로 정확한 에러 원인 파악 불가
+- **새로운 발견:** 로그 확인 결과 `MODEL_CAPACITY_EXHAUSTED` (HTTP 429 - Too Many Requests) 에러 발생 확인. 
+- **가설:** 짧은 시간에 너무 많은 Gemini API 요청이 발생하여 Rate Limit에 걸림.
 
 ## 3. 계획
-- [ ] `auto-run.sh` 내 `process_analysis.js`의 로깅 로직 강화 (`backend/data/logs/analysis.log` 생성)
-- [ ] 쉘 명령어 실행 시 `spawnSync` 등을 사용하거나 이스케이프 처리를 강화하여 안정성 확보
-- [ ] Gemini 응답에서 JSON 추출 로직을 더 유연하게 수정 (Markdown 백틱 제거 등)
+- [x] `auto-run.sh` 내 `process_analysis.js`의 로깅 로직 강화
+- [ ] **(추가) API 호출 간 10초 대기(Sleep) 로직 추가하여 Rate Limit 방지**
+- [ ] 쉘 명령어 실행 시 이스케이프 처리 강화 및 JSON 추출 로직 개선 (진행 중)
 - [ ] 작업 완료 후 로컬 검증 및 GitHub Action 재배포
 
 ## 4. 수행 결과
