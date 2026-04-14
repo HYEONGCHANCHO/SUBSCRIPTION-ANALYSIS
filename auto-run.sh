@@ -25,9 +25,21 @@ const { execSync } = require('child_process');
 
 const { d1, d2, d3 } = JSON.parse(fs.readFileSync('dates.json', 'utf8'));
 const dates = [d1, d2, d3];
+const logPath = 'backend/data/logs/analysis.log';
+if (!fs.existsSync('backend/data/logs')) fs.mkdirSync('backend/data/logs', { recursive: true });
+
+function log(msg) {
+    const timestamp = new Date().toISOString();
+    const line = "[" + timestamp + "] " + msg + "\n";
+    fs.appendFileSync(logPath, line);
+    console.log(msg);
+}
+
+log("🚀 분석 프로세스 시작 (3영업일 대상)");
 let finalReport = "📢 *청약 정밀 분석 통합 리포트 (KST 3영업일)*\n";
 
 dates.forEach(date => {
+    log("📅 날짜 처리 중: " + date);
     finalReport += "\n📅 *" + date + "*\n----------------------------------\n";
     const formattedDate = date.replace(/-/g, '/');
     const sites = ['CheongyakHome', 'LH'];
@@ -36,12 +48,16 @@ dates.forEach(date => {
         const downloadDir = path.join('backend/data/downloads', site, formattedDate);
         const resultDir = path.join('backend/data/results', site, formattedDate);
 
-        if (!fs.existsSync(downloadDir)) return;
+        if (!fs.existsSync(downloadDir)) {
+            log("   - [" + site + "] 다운로드 폴더 없음: " + downloadDir);
+            return;
+        }
         if (!fs.existsSync(resultDir)) fs.mkdirSync(resultDir, { recursive: true });
 
         const files = fs.readdirSync(downloadDir).filter(f => f.endsWith('.pdf') || f.endsWith('.hwpx') || f.endsWith('.hwp'));
         
         if (files.length === 0) {
+            log("   - [" + site + "] 해당 일자 공고 파일 없음");
             finalReport += "📍 (" + site + ") 해당 일자 공고 없음\n";
             return;
         }
@@ -59,38 +75,49 @@ dates.forEach(date => {
                     const data = JSON.parse(fs.readFileSync(resPath, 'utf8'));
                     matchIcon = "[✅ 조건 부합]";
                     summary = data.summary || "요약 정보 없음";
-                } catch(e) { matchIcon = "[⚠️ 데이터 오류]"; }
+                    log("   ✅ 기존 결과 활용 (성공): " + fileName);
+                } catch(e) { matchIcon = "[⚠️ 데이터 오류]"; log("   ❌ JSON 파싱 에러: " + fileName); }
             } else if (fs.existsSync(failPath)) {
                 try {
                     const data = JSON.parse(fs.readFileSync(failPath, 'utf8'));
                     matchIcon = "[❌ 조건 미달]";
                     summary = data.summary || "요약 정보 없음";
-                } catch(e) { matchIcon = "[⚠️ 데이터 오류]"; }
+                    log("   ❌ 기존 결과 활용 (탈락): " + fileName);
+                } catch(e) { matchIcon = "[⚠️ 데이터 오류]"; log("   ❌ JSON 파싱 에러: " + fileName); }
             } else {
-                console.log("🔍 분석 시작: " + fileName + " (" + site + ")");
+                log("   🔍 신규 분석 시작: " + fileName + " (" + site + ")");
                 try {
-                    // Gemini CLI 호출 시 타임아웃 90초 설정
                     const filePath = path.join(downloadDir, file);
                     const prompt = "파일 '" + filePath + "'의 내용을 'analysis-config.md' 기준으로 정밀 분석해서 결과를 JSON으로 출력해줘. 결과는 반드시 matchedTypes, eligibility, summary 등을 포함해야 해. 다른 부연 설명 없이 JSON만 출력해.";
                     
-                    const output = execSync("gemini \"" + prompt + "\"", { 
+                    // 쉘 이스케이프 강화를 위해 따옴표 처리
+                    const safePrompt = prompt.replace(/"/g, '\\"');
+                    const cmd = "gemini \"" + safePrompt + "\"";
+                    
+                    log("      - 명령어 실행: " + cmd.substring(0, 100) + "...");
+                    const output = execSync(cmd, { 
                         encoding: 'utf8', 
-                        timeout: 90000 // 90초 타임아웃
+                        timeout: 100000 
                     });
                     
-                    const jsonMatch = output.match(/\{[\s\S]*\}/);
+                    // JSON 추출 로직 강화 (Markdown 백틱 제거)
+                    let cleanOutput = output.replace(/```json|```/g, '').trim();
+                    const jsonMatch = cleanOutput.match(/\{[\s\S]*\}/);
+                    
                     if (jsonMatch) {
                         const result = JSON.parse(jsonMatch[0]);
-                        const isMatch = result.isMatch || result.eligibility === 'eligible' || result.eligibility === 'PASSED';
+                        const isMatch = result.isMatch === true || result.eligibility === 'eligible' || result.eligibility === 'PASSED';
                         matchIcon = isMatch ? "[✅ 조건 부합]" : "[❌ 조건 미달]";
                         summary = result.summary || "요약 생성 실패";
                         const savePath = isMatch ? resPath : failPath;
                         fs.writeFileSync(savePath, JSON.stringify(result, null, 2));
+                        log("      - 분석 성공: " + matchIcon);
                     } else {
-                        throw new Error("Invalid output");
+                        throw new Error("Gemini 응답에서 JSON을 찾을 수 없음:\n" + output.substring(0, 200));
                     }
                 } catch (e) {
-                    console.error("   ❌ 분석 실패:", e.message);
+                    log("      ❌ 분석 실패 (" + fileName + "): " + e.message);
+                    if (e.stderr) log("      - STDERR: " + e.stderr);
                     matchIcon = "[⚠️ 분석 실패/대기]";
                     summary = "분석 중 오류 발생 또는 타임아웃 (수동 확인 필요)";
                 }
@@ -100,6 +127,7 @@ dates.forEach(date => {
     });
 });
 
+log("✅ 분석 프로세스 완료");
 fs.writeFileSync('daily_report.txt', finalReport);
 INNER_EOF
 
