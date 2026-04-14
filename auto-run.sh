@@ -176,11 +176,11 @@ async function run() {
                         summary = data.summary || "요약 정보 없음";
                         log("   ✅ 기존 결과 활용 (성공): " + fileName);
 
-                        // 기존 결과가 성공인 경우에도 링크 추가
+                        // 🔗 슬랙 하이퍼링크 서식 적용 (기존 결과)
                         const baseUrl = "https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/develop/";
                         const filePath = path.join(downloadDir, file);
                         const encodedPath = filePath.split(path.sep).map(p => encodeURIComponent(p)).join('/');
-                        summary += "\n   - 📄 *공고문 원본:* " + baseUrl + encodedPath;
+                        summary += "\n   👉 <" + baseUrl + encodedPath + "|📄 *공고문 원본 보기*>";
                     } catch(e) { matchIcon = "[⚠️ 데이터 오류]"; log("   ❌ JSON 파싱 에러: " + fileName); }
                 } else if (fs.existsSync(failPath)) {
 
@@ -203,16 +203,16 @@ async function run() {
 
                         let prompt = "";
                         if (extractedText) {
-                            prompt = "청약 공고문 텍스트 분석: " + extractedText + "\n\nJSON 결과만 출력해.";
+                            prompt = "아래 청약 공고문 텍스트를 바탕으로 'analysis-config.md' 기준에 따라 전문가 관점에서 정밀 분석해줘. 결과는 반드시 JSON 형식(matchedTypes, eligibility, summary)으로 출력하고, 특히 summary 부분에는 [입지/교통], [가격 경쟁력], [평면/특징]을 포함하여 최소 3~5줄 이상의 풍부한 정보를 담아줘. 다른 부연 설명 없이 JSON만 출력해.\n\n[공고문 텍스트]\n" + extractedText;
                         } else {
-                            prompt = "파일 '" + filePath + "' 분석: JSON 결과만 출력해.";
+                            prompt = "파일 '" + filePath + "'의 내용을 'analysis-config.md' 기준에 따라 전문가 관점에서 정밀 분석해서 결과를 JSON으로 출력해줘. summary 부분에는 입지, 가격, 특징을 포함한 상세 리포트를 담아줘. 다른 부연 설명 없이 JSON만 출력해.";
                         }
                         
                         const safePrompt = prompt.replace(/"/g, '\\"').replace(/`/g, '\\`');
                         const cmd = "gemini \"" + safePrompt + "\"";
                         
-                        log("      - Gemini 분석 요청 중...");
-                        const output = execSync(cmd, { encoding: 'utf8', timeout: 120000 });
+                        log("      - Gemini 분석 요청 중 (상세 분석 모드)...");
+                        const output = execSync(cmd, { encoding: 'utf8', timeout: 150000 });
                         
                         let cleanOutput = output.replace(/```json|```/g, '').trim();
                         const jsonMatch = cleanOutput.match(/\{[\s\S]*\}/);
@@ -227,19 +227,18 @@ async function run() {
                     }
 
                     if (result) {
-                        const isMatch = result.isMatch === true || result.eligibility === 'eligible' || result.eligibility === 'PASSED';
+                        const isMatch = result.isMatch === true || result.eligibility === 'eligible' || result.eligibility === 'PASSED' || result.eligibility === 'PASS';
                         matchIcon = isMatch ? (result.isHeuristic ? "[✅ 약식 통과]" : "[✅ 조건 부합]") : (result.isHeuristic ? "[❌ 약식 탈락]" : "[❌ 조건 미달]");
                         summary = result.summary || "분석 완료";
                         const savePath = isMatch ? resPath : failPath;
                         fs.writeFileSync(savePath, JSON.stringify(result, null, 2));
                         log("      - 분석 완료: " + matchIcon);
                         
-                        // 🔗 조건 부합 시 공고문 원본 링크 추가
+                        // 🔗 슬랙 하이퍼링크 서식 적용 (신규 분석)
                         if (isMatch) {
                             const baseUrl = "https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/develop/";
-                            // URL 이스케이프 (공백 -> %20 등)
                             const encodedPath = filePath.split(path.sep).map(p => encodeURIComponent(p)).join('/');
-                            summary += "\n   - 📄 *공고문 원본:* " + baseUrl + encodedPath;
+                            summary += "\n   👉 <" + baseUrl + encodedPath + "|📄 *공고문 원본 보기*>";
                         }
                     } else {
                         matchIcon = "[⚠️ 분석 실패]";
