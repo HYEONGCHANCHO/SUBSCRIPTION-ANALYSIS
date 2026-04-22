@@ -18,5 +18,5 @@ function getTargetDates(count = 3) {
     return dates;
 }
 
-const dates = getTargetDates(3);
+const dates = getTargetDates(2);
 console.log(dates.join(','));

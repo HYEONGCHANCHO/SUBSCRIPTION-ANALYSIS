@@ -1,4 +1,4 @@
-export function getTargetDates(count: number = 3): string[] {
+export function getTargetDates(count: number = 2): string[] {
     const dates: string[] = [];
     const now = new Date();
     // KST 보정 (GitHub Action이 UTC 기준이므로 9시간 더함)

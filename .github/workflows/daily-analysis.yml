@@ -1,6 +1,9 @@
 name: Daily Subscription Analysis
 
 on:
+  schedule:
+    # 월~금 한국 시간 오전 6시 30분 (UTC 전날 21:30)
+    - cron: "30 21 * * 0-4"
   workflow_dispatch:
 
 permissions:
