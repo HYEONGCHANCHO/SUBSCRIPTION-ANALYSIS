@@ -20,15 +20,14 @@ async function extractEssentialText(filePath) {
             if (line.length < 5) continue;
 
             if (keywords.some(k => line.includes(k))) {
-                // 핵심 키워드 문장과 문맥을 위한 전후 1문장씩 포함
                 if (i > 0) essentialLines.push(lines[i-1].trim());
                 essentialLines.push(line);
                 if (i < lines.length - 1) essentialLines.push(lines[i+1].trim());
             }
         }
 
-        // 중복 제거 후 1500자로 제한하여 토큰 최소화
-        return [...new Set(essentialLines)].join('\n').substring(0, 1500);
+        // 약식 분석과 AI 분석의 정확도를 위해 2000자로 상향
+        return [...new Set(essentialLines)].join('\n').substring(0, 2000);
     } catch (e) {
         return null;
     }
