@@ -1,87 +1,87 @@
 📢 *청약 통합 정밀 분석 리포트 (CLI 최적화)*
 
-📅 *2026-04-22*
+📅 *2026-05-04*
 ----------------------------------
 
-🏠 *골드클래스 시그니처* ⚪
+🏠 *PH159* ✅
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 (비규제지역, 민간택지)) 교통(수도권 주요 지역(서울, 인천) 인접 및 접근성 양호) 시세(분양가 상한제 미적용 단지로 주변 시세 대비 확인 필요) 자격(부천시 및 수도권(서울, 경기, 인천) 거주자, 청약통장 가입자)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/PH159.pdf?raw=true|📄 *원본 보기*>
+
+🏠 *e편한세상 부천 어반스퀘어* ✅
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 소사구 괴안동 원도심 입지로 서울 구로구/양천구와 인접하여 서울 접근성이 매우 우수함) 교통(지하철 1호선 역곡역과 소사역을 이용할 수 있으며, 경인로 및 외곽순환도로 진입이 용이하여 출퇴근 환경이 양호함) 시세(분양가 상한제 미적용 단지로 59㎡ 기준 6억원대 분양가가 예상되어 시세 대비 적정 수준이며, 실거주 의무가 없어 자금 계획이 유연함) 자격(수원 거주자인 사용자도 경기도 거주자 자격으로 청약 가능하며, 무주택 세대주 및 청년 조건을 충족하여 일반공급 1순위 및 특별공급 신청이 가능함)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/e%ED%8E%B8%ED%95%9C%EC%84%B8%EC%83%81%20%EB%B6%80%EC%B2%9C%20%EC%96%B4%EB%B0%98%EC%8A%A4%ED%80%98%EC%96%B4.pdf?raw=true|📄 *원본 보기*>
+
+🏠 *광명 퍼스트 스위첸* ✅
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 소사동 소사1-1구역 재개발 단지로, 낙후된 구도심이 정비되는 주거 밀집 지역 내 입지함) 교통(지하철 1호선 및 서해선 환승역인 소사역을 도보로 이용 가능한 더블역세권이며, 경인로와 인접하여 서울 및 인근 도심 접근성이 우수함) 시세(분양가 상한제 미적용 단지이나 59타입 기준 6억원대로 예상되어 인근 신축 시세 대비 경쟁력이 있으며, 7억원 미만 조건을 충족함) 자격(비규제지역 내 공급으로 부천시 및 수도권(수원 등) 거주자 신청 가능하며, 무주택 청년 세대주인 사용자의 자격 요건에 부합함)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EA%B4%91%EB%AA%85%20%ED%8D%BC%EC%8A%A4%ED%8A%B8%20%EC%8A%A4%EC%9C%84%EC%B2%B8.pdf?raw=true|📄 *원본 보기*>
+
+🏠 *기장 이진캐스빌 포레* ⚪
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
 🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EA%B3%A8%EB%93%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EC%8B%9C%EA%B7%B8%EB%8B%88%EC%B2%98.pdf?raw=true|📄 *원본 보기*>
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EA%B8%B0%EC%9E%A5%20%EC%9D%B4%EC%A7%84%EC%BA%90%EC%8A%A4%EB%B9%8C%20%ED%8F%AC%EB%A0%88.pdf?raw=true|📄 *원본 보기*>
 
-🏠 *더샵 안동더퍼스트* ❌
+🏠 *대전 롯데캐슬 더퍼스트(조합원 취소분)* ❌
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* 입지(경상북도 안동시에 위치한 민영주택으로, 지방 비규제지역의 입지적 특성을 가지고 있습니다.) 교통(안동역(KTX-이음)을 통한 광역 교통망 이용이 가능하나, 주요 업무지구(서울/수원)로의 출퇴근은 사실상 불가능합니다.) 시세(분양가 상한제 미적용 단지로 전매 제한과 재당첨 제한이 없어 투자 여건은 자유로우나, 안동 지역 내 수요에 의존해야 합니다.) 자격(안동시, 경상북도 및 대구광역시 거주자 우선 공급으로, 수원 거주자인 사용자는 1순위 청약 및 당첨 가능성이 희박합니다.)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EB%8D%94%EC%83%B5%20%EC%95%88%EB%8F%99%EB%8D%94%ED%8D%BC%EC%8A%A4%ED%8A%B8.pdf?raw=true|📄 *원본 보기*>
+🤖 *AI 분석:* 입지(경기도 부천시 소사역 인근 구도심 정비사업지로 생활 인프라가 풍부한 대단지 브랜드 주거지입니다.) 교통(1호선과 서해선이 지나는 소사역 더블 초역세권이며, 향후 GTX-B 노선 개통 시 서울 접근성이 크게 개선될 전망입니다.) 시세(분양가가 59㎡ 기준 7.8억 원대부터 시작하여 사용자의 희망 가격대(7억 원 미만)를 초과하며 주변 시세 대비 가격 메리트가 낮습니다.) 자격(수도권 거주자라면 청약 가능하나, 부천시 거주자 우선 공급이며 분양가 기준 미달로 인해 사용자 맞춤형 추천에는 부합하지 않습니다.)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EB%8C%80%EC%A0%84%20%EB%A1%AF%EB%8D%B0%EC%BA%90%EC%8A%AC%20%EB%8D%94%ED%8D%BC%EC%8A%A4%ED%8A%B8(%EC%A1%B0%ED%95%A9%EC%9B%90%20%EC%B7%A8%EC%86%8C%EB%B6%84).pdf?raw=true|📄 *원본 보기*>
 
-🏠 *도안자이 센텀리체 1단지* ⚪
+🏠 *소제지구 A3BL 중흥S-클래스 우미린* ❌
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EB%8F%84%EC%95%88%EC%9E%90%EC%9D%B4%20%EC%84%BC%ED%85%80%EB%A6%AC%EC%B2%B4%201%EB%8B%A8%EC%A7%80.pdf?raw=true|📄 *원본 보기*>
+🤖 *AI 분석:* 입지(경기도 부천시 소사역 일대 대단지 브랜드 아파트(소사3구역 재개발)) 교통(지하철 1호선·서해선 소사역 초역세권 및 GTX-B(예정) 부천종합운동장역 인접) 시세(전용 59㎡ 기준 7억 후반~8억 중반으로, 사용자 희망가(7억 미만)를 초과함) 자격(수원 거주자(경기도)로 1순위 청약은 가능하나 지역 우선 공급 규정 확인 필요)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%86%8C%EC%A0%9C%EC%A7%80%EA%B5%AC%20A3BL%20%EC%A4%91%ED%9D%A5S-%ED%81%B4%EB%9E%98%EC%8A%A4%20%EC%9A%B0%EB%AF%B8%EB%A6%B0.pdf?raw=true|📄 *원본 보기*>
 
-🏠 *도안자이 센텀리체 2단지* ⚪
-📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EB%8F%84%EC%95%88%EC%9E%90%EC%9D%B4%20%EC%84%BC%ED%85%80%EB%A6%AC%EC%B2%B4%202%EB%8B%A8%EC%A7%80.pdf?raw=true|📄 *원본 보기*>
-
-🏠 *문수로 라티에르 673* ⚪
+🏠 *소제지구 A4BL 중흥S-클래스 우미린* ⚪
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
 🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EB%AC%B8%EC%88%98%EB%A1%9C%20%EB%9D%BC%ED%8B%B0%EC%97%90%EB%A5%B4%20673.pdf?raw=true|📄 *원본 보기*>
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%86%8C%EC%A0%9C%EC%A7%80%EA%B5%AC%20A4BL%20%EC%A4%91%ED%9D%A5S-%ED%81%B4%EB%9E%98%EC%8A%A4%20%EC%9A%B0%EB%AF%B8%EB%A6%B0.pdf?raw=true|📄 *원본 보기*>
 
-🏠 *아산경남아너스빌 랜드마크49* ❌
-📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* 입지(충청남도 아산시) 교통(문서 내 상세 정보 미비 (아산시 일대)) 시세(분양가상한제 미적용 및 민간택지 공급) 자격(아산시 및 충청권(충남, 대전, 세종) 거주자 대상 (수원 거주 사용자 조건 미부합))
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%95%84%EC%82%B0%EA%B2%BD%EB%82%A8%EC%95%84%EB%84%88%EC%8A%A4%EB%B9%8C%20%EB%9E%9C%EB%93%9C%EB%A7%88%ED%81%AC49.pdf?raw=true|📄 *원본 보기*>
-
-🏠 *엘리프 검단 포레듀(AA32블록)* ⚪
-📍 위치: 인천광역시 서구 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%97%98%EB%A6%AC%ED%94%84%20%EA%B2%80%EB%8B%A8%20%ED%8F%AC%EB%A0%88%EB%93%80(AA32%EB%B8%94%EB%A1%9D).pdf?raw=true|📄 *원본 보기*>
-
-🏠 *엘리프 창원* ✅
-📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* 입지(비규제지역 내 공공택지) 교통(내용에 구체적인 정보가 포함되지 않음) 시세(분양가 상한제 적용으로 주변 시세 대비 낮은 분양가 책정 예상) 자격(무주택 세대구성원 등 자격 확인 필요, 재당첨 제한 10년, 중복 청약 금지)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%97%98%EB%A6%AC%ED%94%84%20%EC%B0%BD%EC%9B%90.pdf?raw=true|📄 *원본 보기*>
-
-🏠 *옥정중앙역 대방 디에트르(중상1, 복합1BL)* ⚪
+🏠 *아산탕정자이 메트로시티(A3BL)* ⚪
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
 🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%98%A5%EC%A0%95%EC%A4%91%EC%95%99%EC%97%AD%20%EB%8C%80%EB%B0%A9%20%EB%94%94%EC%97%90%ED%8A%B8%EB%A5%B4(%EC%A4%91%EC%83%811%2C%20%EB%B3%B5%ED%95%A91BL).pdf?raw=true|📄 *원본 보기*>
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%95%84%EC%82%B0%ED%83%95%EC%A0%95%EC%9E%90%EC%9D%B4%20%EB%A9%94%ED%8A%B8%EB%A1%9C%EC%8B%9C%ED%8B%B0(A3BL).pdf?raw=true|📄 *원본 보기*>
 
-🏠 *용인 고림 동문 디 이스트* ⚪
+🏠 *안양자이 헤리티온(3차)* ⚪
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
 🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%9A%A9%EC%9D%B8%20%EA%B3%A0%EB%A6%BC%20%EB%8F%99%EB%AC%B8%20%EB%94%94%20%EC%9D%B4%EC%8A%A4%ED%8A%B8.pdf?raw=true|📄 *원본 보기*>
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%95%88%EC%96%91%EC%9E%90%EC%9D%B4%20%ED%97%A4%EB%A6%AC%ED%8B%B0%EC%98%A8(3%EC%B0%A8).pdf?raw=true|📄 *원본 보기*>
 
-🏠 *정동 롯데캐슬 136(오피스텔)* ⚪
-📍 위치: 중 서울특별시 | 🔢 약식: 미파악㎡ / 1억
-🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%A0%95%EB%8F%99%20%EB%A1%AF%EB%8D%B0%EC%BA%90%EC%8A%AC%20136(%EC%98%A4%ED%94%BC%EC%8A%A4%ED%85%94).pdf?raw=true|📄 *원본 보기*>
+🏠 *운서역 푸르지오 더 스카이 2차* ✅
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 원도심 입지로 기존 생활 인프라 활용이 용이하며 초등학교 및 상업시설 인접) 교통(지하철 1호선 및 서해선 소사역 접근성 우수, 대곡소사선 개통에 따른 수도권 서부권 이동 편의성 향상) 시세(분양가 상한제 미적용 단지로 인근 시세 대비 분양가가 책정되었으나 신축 프리미엄 기대 가능) 자격(부천시 및 수도권(서울, 경기, 인천) 거주자, 청약통장 가입 12개월 이상 및 예치금 충족 시 1순위 가능)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%9A%B4%EC%84%9C%EC%97%AD%20%ED%91%B8%EB%A5%B4%EC%A7%80%EC%98%A4%20%EB%8D%94%20%EC%8A%A4%EC%B9%B4%EC%9D%B4%202%EC%B0%A8.pdf?raw=true|📄 *원본 보기*>
 
-🏠 *천왕역 모아엘가 트레뷰(10차)* ⚪
+🏠 *창원자이 더 스카이* ❌
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 소사본동(소사3구역 재개발), 1호선 및 서해선 소사역 초역세권 입지) 교통(소사역 도보권으로 여의도, 가산, 시흥, 안산 등 수도권 서남부 및 서울 도심 접근성 우수) 시세(59㎡ 기준 8억 중후반대, 84㎡ 기준 11억대로 사용자 예산(7억 미만)을 크게 상회하여 시세 매력 낮음) 자격(부천시 및 수도권 거주자 신청 가능하나, 예산 및 수원 거주자 우선순위 한계로 실질적 메리트 부족)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%B0%BD%EC%9B%90%EC%9E%90%EC%9D%B4%20%EB%8D%94%20%EC%8A%A4%EC%B9%B4%EC%9D%B4.pdf?raw=true|📄 *원본 보기*>
+
+🏠 *천안 동문 디 이스트 파크시티* ⚪
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
 🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%B2%9C%EC%99%95%EC%97%AD%20%EB%AA%A8%EC%95%84%EC%97%98%EA%B0%80%20%ED%8A%B8%EB%A0%88%EB%B7%B0(10%EC%B0%A8).pdf?raw=true|📄 *원본 보기*>
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%B2%9C%EC%95%88%20%EB%8F%99%EB%AC%B8%20%EB%94%94%20%EC%9D%B4%EC%8A%A4%ED%8A%B8%20%ED%8C%8C%ED%81%AC%EC%8B%9C%ED%8B%B0.pdf?raw=true|📄 *원본 보기*>
 
-🏠 *청주 푸르지오 씨엘리체* ❌
+🏠 *천안 휴먼빌 퍼스트시티(2회차)* ✅
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* 입지(충청북도 청주시 (비규제지역, 민간택지)) 교통(희망 업무지(동천역, 강남구 논현로)와 물리적 거리가 매우 멀어 대중교통 통근이 불가능함) 시세(분양가 상한제 미적용 단지로 주변 시세 대비 가격 메리트가 낮을 수 있으나 비규제지역 혜택 존재) 자격(청주시 및 충북 거주자 우선 공급 대상이며, 수원 거주자인 사용자는 기타지역으로 분류되어 당첨 가능성 희박)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%EC%B2%AD%EC%A3%BC%20%ED%91%B8%EB%A5%B4%EC%A7%80%EC%98%A4%20%EC%94%A8%EC%97%98%EB%A6%AC%EC%B2%B4.pdf?raw=true|📄 *원본 보기*>
+🤖 *AI 분석:* 입지(경기도 부천시 (비규제지역, 민간택지 공급)) 교통(수도권 전철 1호선 및 서해선 소사역 인접하여 서울 도심 및 경기 남부 접근성 우수) 시세(분양가 상한제 미적용 단지이나 비규제지역으로 대출 및 청약 규제 완화 적용) 자격(부천시 및 수도권(수원 포함) 거주 무주택 세대주 및 세대원 신청 가능 (청약통장 12개월 이상))
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%EC%B2%9C%EC%95%88%20%ED%9C%B4%EB%A8%BC%EB%B9%8C%20%ED%8D%BC%EC%8A%A4%ED%8A%B8%EC%8B%9C%ED%8B%B0(2%ED%9A%8C%EC%B0%A8).pdf?raw=true|📄 *원본 보기*>
 
-🏠 *힐스테이트 오산 더퍼스트(조합원 자격상실 및 제명세대)(2회차)* ✅
-📍 위치: 경기도 오산시 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* 입지(경기도 오산시 갈곶동에 위치하며, 평택 진위일반산업단지 및 오산 도심과의 접근성이 우수하여 배후 수요가 풍부한 입지입니다.) 교통(수도권 전철 1호선 오산역과 오산역 환승센터가 인접해 있으며, 경부고속도로 오산IC와 경기대로를 통한 광역 이동이 편리합니다.) 시세(분양가 상한제 미적용 단지이나 힐스테이트 브랜드 대단지로서 주변 신축 대비 경쟁력 있는 가격대(84타입 기준 약 4~5억 대)를 형성하고 있습니다.) 자격(공고일 현재 전국에 거주하는 무주택세대구성원이면 누구나 신청 가능하며, 재당첨 제한과 거주 의무 기간이 적용되지 않습니다.)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%ED%9E%90%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%20%EC%98%A4%EC%82%B0%20%EB%8D%94%ED%8D%BC%EC%8A%A4%ED%8A%B8(%EC%A1%B0%ED%95%A9%EC%9B%90%20%EC%9E%90%EA%B2%A9%EC%83%81%EC%8B%A4%20%EB%B0%8F%20%EC%A0%9C%EB%AA%85%EC%84%B8%EB%8C%80)(2%ED%9A%8C%EC%B0%A8).pdf?raw=true|📄 *원본 보기*>
-
-🏠 *힐스테이트 평거 센트럴* ⚪
+🏠 *한화포레나 부산당리* ✅
 📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/22/%ED%9E%90%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%20%ED%8F%89%EA%B1%B0%20%EC%84%BC%ED%8A%B8%EB%9F%B4.pdf?raw=true|📄 *원본 보기*>
+🤖 *AI 분석:* 입지(경기도 부천시 (비규제지역)) 교통(수도권 전철 1호선 및 서해선 인근으로 서울 및 경기 서부권 접근성 양호) 시세(분양가상한제 미적용 단지로 주변 시세 대비 경쟁력 있는 분양가 책정 예상) 자격(부천시 및 수도권(서울, 경기, 인천) 거주자 청약 가능, 부천시 거주자 우선 공급)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%ED%95%9C%ED%99%94%ED%8F%AC%EB%A0%88%EB%82%98%20%EB%B6%80%EC%82%B0%EB%8B%B9%EB%A6%AC.pdf?raw=true|📄 *원본 보기*>
 
-📅 *2026-04-23*
+🏠 *해링턴플레이스 노원 센트럴* ❌
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 원미구 소사동 48-21 일원 (소사3구역 재개발)) 교통(지하철 1호선 및 서해선 소사역 '더블 초역세권'으로 서울 도심 접근성 최상급) 시세(전용 59㎡ 기준 약 8.5~8.7억원대, 84㎡ 기준 약 11억원대로 사용자 기준(7억 미만) 초과) 자격(부천시 및 수도권 거주자 청약 가능하나, 부천시 거주자 우선 공급으로 수원 거주자는 후순위)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%ED%95%B4%EB%A7%81%ED%84%B4%ED%94%8C%EB%A0%88%EC%9D%B4%EC%8A%A4%20%EB%85%B8%EC%9B%90%20%EC%84%BC%ED%8A%B8%EB%9F%B4.pdf?raw=true|📄 *원본 보기*>
+
+🏠 *힐스테이트 금오 더퍼스트* ✅
+📍 위치: 위치 미파악 | 🔢 약식: 미파악㎡ / 미파악
+🤖 *AI 분석:* 입지(경기도 부천시 (비규제지역, 민간택지)) 교통(해당 공고문 텍스트 내 구체적인 교통 정보 미기재) 시세(분양가 상한제 미적용 단지로 실거주 의무 없음) 자격(부천시 및 수도권(서울, 경기, 인천) 거주자, 재당첨 제한 없음)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/05/04/%ED%9E%90%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%20%EA%B8%88%EC%98%A4%20%EB%8D%94%ED%8D%BC%EC%8A%A4%ED%8A%B8.pdf?raw=true|📄 *원본 보기*>
+
+📅 *2026-05-05*
 ----------------------------------
-
-🏠 *엘리프 검단 포레듀(AA32블록)* ⚪
-📍 위치: 인천광역시 서구 | 🔢 약식: 미파악㎡ / 미파악
-🤖 *AI 분석:* (분석 대기 중 - 약식 데이터 활용)
-👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/23/%EC%97%98%EB%A6%AC%ED%94%84%20%EA%B2%80%EB%8B%A8%20%ED%8F%AC%EB%A0%88%EB%93%80(AA32%EB%B8%94%EB%A1%9D).pdf?raw=true|📄 *원본 보기*>
