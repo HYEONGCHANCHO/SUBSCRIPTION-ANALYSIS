@@ -7,8 +7,8 @@ import { getTargetDates, isTargetDate } from '../utils/date-utils';
 export class LHScraper implements IScraper {
     private url: string = 'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?mi=1026';
     private baseDownloadDir: string = path.resolve(process.cwd(), 'backend/data/downloads/LH');
-    private gyeonggiExcludes = ['부천', '안성', '구리', '남양주', '양주', '동두천', '하남', '김포', '인천', '파주', '청년 전세임대', '가정어린이집'];
-    private seoulExcludes = ['청년 전세임대'];
+    private gyeonggiExcludes: string[] = []; // 사전 필터 제거
+    private seoulExcludes: string[] = [];
     public onProgress?: (progress: number, status: string) => void;
 
     async scrape(): Promise<void> {
@@ -20,7 +20,7 @@ export class LHScraper implements IScraper {
         const page: Page = await context.newPage();
 
         try {
-            const targetDates = getTargetDates(3);
+            const targetDates = getTargetDates(2);
             await this.processRegion(page, '경기도', '41', this.gyeonggiExcludes, 0, 80, targetDates);
             await this.processRegion(page, '서울특별시', '11', this.seoulExcludes, 80, 100, targetDates);
             this.onProgress?.(100, '수집 완료');

@@ -1,13 +1,17 @@
-function getTargetDates(count = 3) {
+function getTargetDates(count = 2) {
     const dates = [];
     const now = new Date();
-    // KST 보정 (GitHub Action 환경 대응)
-    const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
-    let current = new Date(kst.getFullYear(), kst.getMonth(), kst.getDate());
+    
+    // 타임존에 관계없이 한국 시간 기준의 날짜 객체 생성
+    const kstStr = now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
+    const kstDate = new Date(kstStr);
+    
+    let current = new Date(kstDate.getFullYear(), kstDate.getMonth(), kstDate.getDate());
 
     while (dates.length < count) {
         const day = current.getDay();
-        if (day !== 0 && day !== 6) { // 토, 일 제외
+        // 토(6), 일(0) 제외하고 영업일만 추출 (사용자 필요에 따라 조정 가능)
+        if (day !== 0 && day !== 6) {
             const y = current.getFullYear();
             const m = String(current.getMonth() + 1).padStart(2, '0');
             const d = String(current.getDate()).padStart(2, '0');

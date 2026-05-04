@@ -1,7 +1,107 @@
-📢 *청약 정밀 분석 통합 리포트 (KST 2영업일)*
+📢 *청약 통합 정밀 분석 리포트*
 
-📅 *2026-04-15*
+📅 *2026-04-27*
 ----------------------------------
 
-📅 *2026-04-16*
+🏠 *강릉 우미 린 더 프리미어* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EA%B0%95%EB%A6%89%20%EC%9A%B0%EB%AF%B8%20%EB%A6%B0%20%EB%8D%94%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%96%B4.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *경기광주역 롯데캐슬 시그니처 1단지* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EA%B2%BD%EA%B8%B0%EA%B4%91%EC%A3%BC%EC%97%AD%20%EB%A1%AF%EB%8D%B0%EC%BA%90%EC%8A%AC%20%EC%8B%9C%EA%B7%B8%EB%8B%88%EC%B2%98%201%EB%8B%A8%EC%A7%80.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *공덕역자이르네* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EA%B3%B5%EB%8D%95%EC%97%AD%EC%9E%90%EC%9D%B4%EB%A5%B4%EB%84%A4.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *광명자이더샵포레나* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EA%B4%91%EB%AA%85%EC%9E%90%EC%9D%B4%EB%8D%94%EC%83%B5%ED%8F%AC%EB%A0%88%EB%82%98.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *동탄 그웬 160 (동탄2 B11BL)* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%8F%99%ED%83%84%20%EA%B7%B8%EC%9B%AC%20160%20(%EB%8F%99%ED%83%842%20B11BL).pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *동탄 파크릭스 A51-1BL* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%8F%99%ED%83%84%20%ED%8C%8C%ED%81%AC%EB%A6%AD%EC%8A%A4%20A51-1BL.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *동탄 파크릭스 A51-2BL* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%8F%99%ED%83%84%20%ED%8C%8C%ED%81%AC%EB%A6%AD%EC%8A%A4%20A51-2BL.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *동탄 파크릭스 A52BL* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%8F%99%ED%83%84%20%ED%8C%8C%ED%81%AC%EB%A6%AD%EC%8A%A4%20A52BL.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *동탄 파크릭스 A55BL* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%8F%99%ED%83%84%20%ED%8C%8C%ED%81%AC%EB%A6%AD%EC%8A%A4%20A55BL.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *두산위브더제니스 구미(조합원취소분)* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%91%90%EC%82%B0%EC%9C%84%EB%B8%8C%EB%8D%94%EC%A0%9C%EB%8B%88%EC%8A%A4%20%EA%B5%AC%EB%AF%B8(%EC%A1%B0%ED%95%A9%EC%9B%90%EC%B7%A8%EC%86%8C%EB%B6%84).pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *래미안 엘라비네* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EB%9E%98%EB%AF%B8%EC%95%88%20%EC%97%98%EB%9D%BC%EB%B9%84%EB%84%A4.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *신촌 에르노 플레이스* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EC%8B%A0%EC%B4%8C%20%EC%97%90%EB%A5%B4%EB%85%B8%20%ED%94%8C%EB%A0%88%EC%9D%B4%EC%8A%A4.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *용인 플랫폼시티 라온프라이빗 아르디에* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EC%9A%A9%EC%9D%B8%20%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%8B%9C%ED%8B%B0%20%EB%9D%BC%EC%98%A8%ED%94%84%EB%9D%BC%EC%9D%B4%EB%B9%97%20%EC%95%84%EB%A5%B4%EB%94%94%EC%97%90.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *정동 롯데캐슬 136(도시형 생활주택)* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/27/%EC%A0%95%EB%8F%99%20%EB%A1%AF%EB%8D%B0%EC%BA%90%EC%8A%AC%20136(%EB%8F%84%EC%8B%9C%ED%98%95%20%EC%83%9D%ED%99%9C%EC%A3%BC%ED%83%9D).pdf?raw=true|📄 *공고문 원본 보기*>
+
+📅 *2026-04-28*
 ----------------------------------
+
+🏠 *강릉 우미 린 더 프리미어* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/28/%EA%B0%95%EB%A6%89%20%EC%9A%B0%EB%AF%B8%20%EB%A6%B0%20%EB%8D%94%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%96%B4.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *경기광주역 롯데캐슬 시그니처 1단지* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/28/%EA%B2%BD%EA%B8%B0%EA%B4%91%EC%A3%BC%EC%97%AD%20%EB%A1%AF%EB%8D%B0%EC%BA%90%EC%8A%AC%20%EC%8B%9C%EA%B7%B8%EB%8B%88%EC%B2%98%201%EB%8B%A8%EC%A7%80.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *공덕역자이르네* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/28/%EA%B3%B5%EB%8D%95%EC%97%AD%EC%9E%90%EC%9D%B4%EB%A5%B4%EB%84%A4.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *광명자이더샵포레나* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/28/%EA%B4%91%EB%AA%85%EC%9E%90%EC%9D%B4%EB%8D%94%EC%83%B5%ED%8F%AC%EB%A0%88%EB%82%98.pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *동탄 그웬 160 (동탄2 B11BL)* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/28/%EB%8F%99%ED%83%84%20%EA%B7%B8%EC%9B%AC%20160%20(%EB%8F%99%ED%83%842%20B11BL).pdf?raw=true|📄 *공고문 원본 보기*>
+
+🏠 *두산위브더제니스 구미(조합원취소분)* ⚪
+📍 위치: 위치 미파악 | 🔢 약식: 미파악 / 미파악
+🤖 *AI 분석:* (AI 일시적 지연으로 약식 데이터만 제공)
+👉 <https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/blob/main/backend/data/downloads/CheongyakHome/2026/04/28/%EB%91%90%EC%82%B0%EC%9C%84%EB%B8%8C%EB%8D%94%EC%A0%9C%EB%8B%88%EC%8A%A4%20%EA%B5%AC%EB%AF%B8(%EC%A1%B0%ED%95%A9%EC%9B%90%EC%B7%A8%EC%86%8C%EB%B6%84).pdf?raw=true|📄 *공고문 원본 보기*>

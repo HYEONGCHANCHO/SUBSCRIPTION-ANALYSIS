@@ -94,7 +94,11 @@ async function main() {
         updateUI();
 
         await Promise.all(scrapers.map(async (scraper: any) => {
-            try { await scraper.scrape(); } catch (e) {}
+            try { 
+                await scraper.scrape(); 
+            } catch (e) {
+                console.error(`\n\x1b[31m[Scraper Error: ${scraper.constructor.name}]\x1b[0m`, e);
+            }
         }));
 
         // SCRAPE_ONLY 모드인 경우 여기서 종료
