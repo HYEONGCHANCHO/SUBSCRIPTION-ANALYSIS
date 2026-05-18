@@ -11,24 +11,72 @@ D2=$(echo $ANALYSIS_DATES | cut -d',' -f2)
 echo "🎯 분석 대상: $D1, $D2"
 echo "{\"d1\": \"$D1\", \"d2\": \"$D2\"}" > dates.json
 
-# 3. 데이터 수집 및 분석 (4월 27일 방식: main.ts 실행)
-# 이 과정에서 복원된 HomeScraper와 Analyzer가 작동합니다.
-npm start
+# 3. 데이터 수집
+npm run scrape
 
-# 4. 슬랙 전송 (daily_report.txt 생성을 위해 간단한 스크립트 실행)
-# Analyzer의 결과를 바탕으로 리포트를 생성하는 과정은 main.ts에서 처리되거나 
-# 아래에서 간단히 daily_report.txt를 만들어 전송합니다.
+# 4. 에이전트 직접 분석(CLI 활용) 루프
+echo "🤖 에이전트 정밀 분석 시작..."
+REPORT_FILE="daily_report.txt"
+echo "📢 *청약 통합 정밀 분석 리포트 (에이전트 직접 분석)*" > $REPORT_FILE
+echo "" >> $REPORT_FILE
 
+# 수집된 모든 PDF 파일에 대해 분석 수행
+find backend/data/downloads -name "*.pdf" | while read -r file; do
+    FILENAME=$(basename "$file")
+    DIRNAME=$(dirname "$file")
+    RESULT_DIR="${DIRNAME/downloads/results}"
+    mkdir -p "$RESULT_DIR"
+    
+    # 이미 분석된 파일인지 확인
+    if [ -f "$RESULT_DIR/$FILENAME.json" ] || [ -f "$RESULT_DIR/[조건 미부합] $FILENAME.json" ]; then
+        echo "   ✅ 이미 분석됨: $FILENAME"
+        continue
+    fi
+
+    echo "   🔍 분석 중: $FILENAME"
+    
+    # 텍스트 추출
+    TEXT=$(node extract_text.js "$file" | head -c 10000)
+    
+    # Gemini CLI를 이용한 에이전트급 분석 요청
+    PROMPT="당신은 부동산 전문 AI 에이전트입니다. 아래 공고문 텍스트를 'analysis-config.md' 기준(수원 거주, 무주택, 청년)에 따라 분석하여 반드시 순수 JSON만 출력하세요.
+    
+    텍스트: $TEXT"
+    
+    ANALYSIS_JSON=$(gemini "$PROMPT" --silent)
+    
+    # 결과 저장 (JSON 정합성 체크 후 저장)
+    if echo "$ANALYSIS_JSON" | grep -q "{"; then
+        IS_MATCH=$(echo "$ANALYSIS_JSON" | grep -o '"isMatch": *true' | head -1)
+        if [ -n "$IS_MATCH" ]; then
+            SAVE_PATH="$RESULT_DIR/$FILENAME.json"
+            MATCH_ICON="✅"
+        else
+            SAVE_PATH="$RESULT_DIR/[조건 미부합] $FILENAME.json"
+            MATCH_ICON="❌"
+        fi
+        echo "$ANALYSIS_JSON" > "$SAVE_PATH"
+        
+        # 리포트 요약 추가
+        SUMMARY=$(echo "$ANALYSIS_JSON" | grep -o '"summary": *"[^"]*"' | cut -d'"' -f4)
+        echo "🏠 *${FILENAME%.*}* $MATCH_ICON" >> $REPORT_FILE
+        echo "- $SUMMARY" >> $REPORT_FILE
+        echo "" >> $REPORT_FILE
+        echo "   └ 분석 완료: $MATCH_ICON"
+    else
+        echo "   ⚠️ 분석 실패: $FILENAME"
+    fi
+done
+
+# 5. 슬랙 전송
 SLACK_URL=$(grep "^SLACK_WEBHOOK_URL=" .env | cut -d '=' -f2)
-if [ -z "$SLACK_URL" ]; then
-    SLACK_URL=$SLACK_WEBHOOK_URL
-fi
+[ -z "$SLACK_URL" ] && SLACK_URL=$SLACK_WEBHOOK_URL
 
-if [ -n "$SLACK_URL" ] && [ -f "daily_report.txt" ]; then
+if [ -n "$SLACK_URL" ] && [ -f "$REPORT_FILE" ]; then
     node -e "
     const https = require('https');
     const fs = require('fs');
-    const content = fs.readFileSync('daily_report.txt', 'utf8');
+    const content = fs.readFileSync('$REPORT_FILE', 'utf8');
     const payload = JSON.stringify({ text: content });
     const url = new URL('$SLACK_URL');
     const options = {
@@ -37,9 +85,7 @@ if [ -n "$SLACK_URL" ] && [ -f "daily_report.txt" ]; then
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }
     };
-    const req = https.request(options, (res) => {
-        console.log('Slack response:', res.statusCode);
-    });
+    const req = https.request(options, (res) => console.log('Slack response:', res.statusCode));
     req.on('error', (e) => console.error('Slack error:', e));
     req.write(payload);
     req.end();
