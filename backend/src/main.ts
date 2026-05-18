@@ -94,11 +94,7 @@ async function main() {
         updateUI();
 
         await Promise.all(scrapers.map(async (scraper: any) => {
-            try { 
-                await scraper.scrape(); 
-            } catch (e) {
-                console.error(`\n\x1b[31m[Scraper Error: ${scraper.constructor.name}]\x1b[0m`, e);
-            }
+            try { await scraper.scrape(); } catch (e) {}
         }));
 
         // SCRAPE_ONLY 모드인 경우 여기서 종료
@@ -136,6 +132,21 @@ async function main() {
         }
 
         console.log('\x1b[1;32m✅ 수집 및 분석 작업 완료\x1b[0m\n');
+
+        // daily_report.txt 생성 로직 추가
+        const fs = require('fs');
+        let report = `📢 *청약 통합 분석 리포트*\n\n`;
+        report += `📊 *분석 통계*\n- 전체 공고: ${results.length}건\n- 조건 부합: ${passed.length}건\n- 조건 제외: ${filteredCount}건\n\n`;
+        
+        if (passed.length > 0) {
+            report += `✅ *추천 공고*\n`;
+            passed.forEach((r, i) => {
+                report += `${i + 1}. [${r.site}] *${r.title}*\n`;
+                report += `   └ 면적: ${r.area || '미정'}㎡ | 분양가: ${r.price ? (r.price / 100000000).toFixed(1) + '억' : '미정'} | 기한: ${r.dueDate || '미정'}\n`;
+            });
+        }
+        fs.writeFileSync('daily_report.txt', report);
+
     } catch (error) {
         process.stdout.write('\x1b[?25h');
         console.error('\n[Main Error]', error);
