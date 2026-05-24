@@ -14,7 +14,7 @@ yarn-error.log*
 
 # Databases & Data
 backend/data/subscription.db
-backend/data/downloads/
+# backend/data/downloads/ (GitHub Actions에서 결과물로 활용하기 위해 주석 처리)
 # backend/data/results/ (결과물은 저장하여 중복 분석 방지)
 
 # OS specific files

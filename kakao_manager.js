@@ -4,15 +4,7 @@ const path = require('path');
 
 const TOKEN_PATH = path.join(__dirname, 'kakao_token.json');
 const CLIENT_ID = 'df08177ef1ae98f770df7d05e8239101';
-const REDIRECT_URI = 'https://localhost.com';
 
-// 1. 처음 전달받은 CODE로 토큰 세트(Access, Refresh) 발급받기
-async function getInitialToken(code) {
-    const postData = `grant_type=authorization_code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&code=${code}`;
-    return requestToken(postData);
-}
-
-// 2. 리프레시 토큰으로 액세스 토큰 갱신하기
 async function refreshToken() {
     if (!fs.existsSync(TOKEN_PATH)) return null;
     const tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
@@ -23,22 +15,15 @@ async function refreshToken() {
 function requestToken(postData) {
     return new Promise((resolve, reject) => {
         const options = {
-            hostname: 'kauth.kakao.com',
-            path: '/oauth/token',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(postData)
-            }
+            hostname: 'kauth.kakao.com', path: '/oauth/token', method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(postData) }
         };
-
         const req = https.request(options, (res) => {
             let data = '';
             res.on('data', (chunk) => data += chunk);
             res.on('end', () => {
                 const result = JSON.parse(data);
                 if (res.statusCode === 200) {
-                    // 기존 토큰 정보와 병합 (리프레시 토큰은 안 올 수도 있음)
                     let newTokens = result;
                     if (fs.existsSync(TOKEN_PATH)) {
                         const old = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
@@ -46,9 +31,7 @@ function requestToken(postData) {
                     }
                     fs.writeFileSync(TOKEN_PATH, JSON.stringify(newTokens, null, 2));
                     resolve(newTokens);
-                } else {
-                    reject(data);
-                }
+                } else reject(data);
             });
         });
         req.on('error', reject);
@@ -57,74 +40,76 @@ function requestToken(postData) {
     });
 }
 
-// 3. 메시지 보내기 (정제된 리포트 전송)
-async function sendMe(text, customUrl) {
-    if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰이 없습니다.');
+async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
+    if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰 없음');
     let tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
 
-    // 리포트 텍스트 정제
-    let refinedText = text;
-    if (text.includes('✅ *추천 공고*')) {
-        refinedText = '📢 오늘자 청약 추천 요약\n' + text.split('✅ *추천 공고*')[1].trim();
-    }
-    refinedText = refinedText.substring(0, 350) + '\n... (이하 생략)';
+    // 단지별('[분석 대상]')로 메시지 분할
+    const properties = text.split('[분석 대상]').filter(p => p.trim().length > 0);
 
-    const targetUrl = customUrl || 'https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS';
-
-    const sendRequest = (token) => {
+    const sendRequest = (chunk, isFirst) => {
         return new Promise((resolve, reject) => {
-            const body = `template_object=${encodeURIComponent(JSON.stringify({
+            const fullContent = '[분석 대상]' + chunk;
+            
+            // 1. URL 추출 및 마커 제거
+            const urlMatch = fullContent.match(/🔗LINK:(https?:\/\/[^\s\n]+)/);
+            let targetUrl = (urlMatch && urlMatch[1].trim()) || fallbackUrl;
+            
+            // 2. 본문 클리닝 (URL 마커 제거 및 불필요한 공백 정리)
+            let cleanText = fullContent
+                .replace(/🔗LINK:.*\n?/g, '')
+                .replace(/http[s]?:\/\/[^\s\)]+/g, '')
+                .trim();
+
+            if (!cleanText) return resolve({ success: true });
+
+            // 3. 카카오톡 '텍스트' 템플릿 - 링크가 메시지 전체에 걸림
+            const template = {
                 object_type: 'text',
-                text: refinedText,
+                text: (isFirst ? '📢 청약 통합 정밀 분석 리포트\n\n' : '') + cleanText,
                 link: { 
                     web_url: targetUrl, 
                     mobile_web_url: targetUrl 
                 },
-                button_title: '실제 공고 결과 확인'
-            }))}`;
+                button_title: '상세 공고 보기'
+            };
+
+            const body = `template_object=${encodeURIComponent(JSON.stringify(template))}`;
 
             const options = {
-                hostname: 'kapi.kakao.com',
-                path: '/v2/api/talk/memo/default/send',
-                method: 'POST',
+                hostname: 'kapi.kakao.com', path: '/v2/api/talk/memo/default/send', method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${tokens.access_token}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Content-Length': Buffer.byteLength(body)
                 }
             };
 
             const req = https.request(options, (res) => {
-                let resData = '';
-                res.on('data', d => resData += d);
-                res.on('end', () => {
-                    if (res.statusCode === 200) resolve({ success: true });
-                    else if (res.statusCode === 401) resolve({ success: false, code: 401 });
-                    else resolve({ success: false, msg: resData });
-                });
+                if (res.statusCode === 200) resolve({ success: true });
+                else if (res.statusCode === 401) resolve({ success: false, code: 401 });
+                else resolve({ success: false });
             });
             req.write(body);
             req.end();
         });
     };
 
-    let result = await sendRequest(tokens.access_token);
-    if (!result.success && result.code === 401) {
-        console.log('🔄 액세스 토큰 만료됨. 갱신 시도 중...');
-        tokens = await refreshToken();
-        result = await sendRequest(tokens.access_token);
+    for (let i = 0; i < properties.length; i++) {
+        let result = await sendRequest(properties[i], i === 0);
+        if (!result.success && result.code === 401) {
+            tokens = await refreshToken();
+            result = await sendRequest(properties[i], i === 0);
+        }
+        await new Promise(r => setTimeout(r, 1000));
     }
-    
-    if (!result.success) throw new Error('전송 실패: ' + result.msg);
     return true;
 }
 
-// 실행 모드 처리
 const mode = process.argv[2];
 const arg = process.argv[3];
+const urlArg = process.argv[4];
 
-if (mode === 'init' && arg) {
-    getInitialToken(arg).then(() => console.log('✅ 최초 토큰 발급 완료')).catch(console.error);
-} else if (mode === 'send' && arg) {
-    sendMe(arg).then(() => console.log('✅ 메시지 전송 성공')).catch(console.error);
+if (mode === 'send' && arg) {
+    sendMe(arg, urlArg).then(() => console.log('✅ 전송 성공')).catch(console.error);
 }

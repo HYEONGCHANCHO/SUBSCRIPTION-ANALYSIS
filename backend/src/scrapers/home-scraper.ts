@@ -122,11 +122,20 @@ export class HomeScraper {
 
     private async processNoticeStrictly(targetPage: Frame | Page, page: Page, label: any, dateDir: string, safeTitle: string) {
         const finalPath = path.join(dateDir, `${safeTitle}.pdf`);
+        const urlPath = path.join(dateDir, `${safeTitle}.url`);
         if (fs.existsSync(finalPath)) return;
 
         try {
             await label.evaluate((el: HTMLElement) => el.click());
             const iframe = await targetPage.waitForSelector('#iframeDialog', { state: 'visible', timeout: 10000 });
+
+            // 공고 상세 URL 추출 및 저장
+            const detailUrl = await iframe.getAttribute('src');
+            if (detailUrl) {
+                const fullUrl = detailUrl.startsWith('http') ? detailUrl : `https://www.applyhome.co.kr${detailUrl}`;
+                fs.writeFileSync(urlPath, fullUrl);
+            }
+
             const frame = await iframe.contentFrame();
             if (frame) {
                 await frame.waitForSelector('button, a', { timeout: 8000 }).catch(() => {});

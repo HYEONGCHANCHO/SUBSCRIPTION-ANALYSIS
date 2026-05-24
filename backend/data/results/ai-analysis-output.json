@@ -1,0 +1,290 @@
+{
+  "대방역 여의도 더로드캐슬(3차).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/대방역 여의도 더로드캐슬(3차).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 대방역 여의도 더로드캐슬(3차): 면적 60㎡, 가격 0.0억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "영통역 우미 린.pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/영통역 우미 린.pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 영통역 우미 린: 면적 0㎡, 가격 0.0억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "용인 푸르지오 원클러스터파크(3차).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/용인 푸르지오 원클러스터파크(3차).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 용인 푸르지오 원클러스터파크(3차): 면적 0㎡, 가격 0.0억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "용인 푸르지오 클루센트(2차).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/용인 푸르지오 클루센트(2차).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 용인 푸르지오 클루센트(2차): 면적 0㎡, 가격 NaN억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "용인 플랫폼시티 라온프라이빗 아르디에(2차).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/용인 플랫폼시티 라온프라이빗 아르디에(2차).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 용인 플랫폼시티 라온프라이빗 아르디에(2차): 면적 0㎡, 가격 NaN억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "중앙하이츠 원종역.pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/20/중앙하이츠 원종역.pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 중앙하이츠 원종역: 면적 85㎡, 가격 NaN억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "파크라움 여의도.pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/파크라움 여의도.pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 파크라움 여의도: 면적 0㎡, 가격 NaN억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "한양 더챔버파크로지아.pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/19/한양 더챔버파크로지아.pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 한양 더챔버파크로지아: 면적 884㎡, 가격 0.0억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "의왕청계역 시티프라디움 디하모니.pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/20/의왕청계역 시티프라디움 디하모니.pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 의왕청계역 시티프라디움 디하모니: 면적 60㎡, 가격 0.0억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "식사 푸르지오 파크센트(조합원 취소분).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/21/식사 푸르지오 파크센트(조합원 취소분).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 식사 푸르지오 파크센트(조합원 취소분): 면적 85㎡, 가격 NaN억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "옥정중앙역 대방 디에트르(중상1, 복합1BL).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/21/옥정중앙역 대방 디에트르(중상1, 복합1BL).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 옥정중앙역 대방 디에트르(중상1, 복합1BL): 면적 60㎡, 가격 0.0억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  },
+  "파주 운정신도시 A2블록 호반써밋 이스트파크(4차).pdf": {
+    "path": "/Users/hyeongchan/subscription-analysis/backend/data/downloads/CheongyakHome/2026/05/21/파주 운정신도시 A2블록 호반써밋 이스트파크(4차).pdf",
+    "analysis": {
+      "isMatch": false,
+      "applyDate": "2026-05-18",
+      "matchedTypes": [],
+      "eligibility": {
+        "isEligible": true,
+        "detail": "수원 거주/무주택/청년 조건 (상세 공고문 확인 필요)"
+      },
+      "regulations": {
+        "transferRestriction": "공고문 확인 필요",
+        "residenceObligation": "공고문 확인 필요"
+      },
+      "marketAnalysis": {
+        "attractiveness": "AI 분석 실패로 인한 약식 데이터입니다."
+      },
+      "commute": {
+        "toDongcheon": "분석 불가",
+        "toNonhyeon": "분석 불가"
+      },
+      "summary": "[🔢 약식 분석] 파주 운정신도시 A2블록 호반써밋 이스트파크(4차): 면적 0㎡, 가격 NaN억. (AI 쿼터 초과로 인한 대체 분석)"
+    }
+  }
+}
