@@ -2,6 +2,7 @@ name: Daily Subscription Analysis
 
 on:
   schedule:
+    # 월~금 한국 시간 오전 6시 30분 (UTC 전날 21:30)
     - cron: "30 21 * * 0-4"
   workflow_dispatch:
 
@@ -9,22 +10,20 @@ permissions:
   contents: write
 
 env:
-  # 2026년 기준 Node.js 24를 기본으로 사용
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      # 최신 메이저 버전(v5 이상)이 출시된 경우 이를 사용하면 경고가 사라집니다.
       - name: Checkout repository
-        uses: actions/checkout@v4 # 또는 v5가 있다면 v5로 자동 전환 시도
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24.x' # 특정 버전을 명시하여 엔진 선택 명확화
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
@@ -35,11 +34,15 @@ jobs:
       - name: Install Gemini CLI
         run: npm install -g @google/gemini-cli
 
-      - name: Restore Gemini CLI Auth
+      - name: Restore Gemini & Kakao Auth
         run: |
+          # Gemini CLI 설정
           mkdir -p ~/.gemini
           echo '${{ secrets.GEMINI_OAUTH_CREDS }}' > ~/.gemini/oauth_creds.json
           echo '{"security":{"auth":{"selectedType":"oauth-personal"}}}' > ~/.gemini/settings.json
+          
+          # 카카오톡 토큰 복구
+          echo '${{ secrets.KAKAO_TOKEN_JSON }}' > kakao_token.json
 
       - name: Run Analysis
         env:
