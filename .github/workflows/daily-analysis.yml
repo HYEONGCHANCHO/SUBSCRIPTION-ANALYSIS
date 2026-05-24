@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 env:
-  # 모든 액션을 Node.js 24에서 실행하도록 강제 (충돌 방지를 위해 하나만 설정)
+  # 모든 액션을 Node.js 24에서 실행하도록 강제
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -49,15 +49,16 @@ jobs:
           chmod +x auto-run.sh
           ./auto-run.sh
 
-      - name: Commit and Push Results
+      - name: Commit and Push Results (including PDFs)
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # 결과 데이터와 다운로드된 PDF 모두 추가
           git add backend/data/results/
+          git add backend/data/downloads/
           if ! git diff --cached --quiet; then
-            git commit -m "chore: auto-update analysis results [skip ci]"
-            # 현재 실행 중인 브랜치로 자동 푸시 (main 등)
+            git commit -m "chore: auto-update analysis results and download notice PDFs [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
           else
-            echo "No new results to commit."
+            echo "No changes to commit."
           fi
