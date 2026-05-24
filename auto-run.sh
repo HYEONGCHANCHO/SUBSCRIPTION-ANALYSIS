@@ -68,5 +68,12 @@ rm -f report_helper.js temp_result.json
 if [ -f "kakao_manager.js" ] && [ -f "$REPORT_FILE" ]; then
     echo "📲 카카오톡 리포트 전송 중..."
     REPORT_CONTENT=$(cat "$REPORT_FILE")
-    node kakao_manager.js send "$REPORT_CONTENT"
+    
+    # 오늘자 결과물이 저장된 깃허브 실제 경로 생성
+    YEAR=$(date +%Y)
+    MONTH=$(date +%m)
+    DAY=$(date +%d)
+    RESULT_LINK="https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS/tree/main/backend/data/results/CheongyakHome/$YEAR/$MONTH/$DAY/"
+    
+    node kakao_manager.js send "$REPORT_CONTENT" "$RESULT_LINK"
 fi

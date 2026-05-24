@@ -58,17 +58,18 @@ function requestToken(postData) {
 }
 
 // 3. 메시지 보내기 (정제된 리포트 전송)
-async function sendMe(text) {
+async function sendMe(text, customUrl) {
     if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰이 없습니다.');
     let tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
 
-    // 리포트 텍스트 정제 (너무 길면 카카오 API에서 거부됨)
-    // 1. 추천 공고 부분만 추출하거나 앞부분 400자만 사용
+    // 리포트 텍스트 정제
     let refinedText = text;
     if (text.includes('✅ *추천 공고*')) {
         refinedText = '📢 오늘자 청약 추천 요약\n' + text.split('✅ *추천 공고*')[1].trim();
     }
     refinedText = refinedText.substring(0, 350) + '\n... (이하 생략)';
+
+    const targetUrl = customUrl || 'https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS';
 
     const sendRequest = (token) => {
         return new Promise((resolve, reject) => {
@@ -76,10 +77,10 @@ async function sendMe(text) {
                 object_type: 'text',
                 text: refinedText,
                 link: { 
-                    web_url: 'https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS', 
-                    mobile_web_url: 'https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS' 
+                    web_url: targetUrl, 
+                    mobile_web_url: targetUrl 
                 },
-                button_title: '전체 리포트 확인'
+                button_title: '실제 공고 결과 확인'
             }))}`;
 
             const options = {
