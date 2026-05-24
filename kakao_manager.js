@@ -40,32 +40,34 @@ function requestToken(postData) {
     });
 }
 
-async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
+async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS') {
     if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰 없음');
     let tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
 
-    // 단지별('[분석 대상]')로 메시지 분할
     const properties = text.split('[분석 대상]').filter(p => p.trim().length > 0);
 
     const sendRequest = (chunk, isFirst) => {
         return new Promise((resolve, reject) => {
             const fullContent = '[분석 대상]' + chunk;
             
-            // 1. URL 추출 (🔗LINK: 마커 뒤의 URL을 줄바꿈 전까지 캡처)
-            const urlMatch = fullContent.match(/🔗LINK:([^\s\n]+)/);
-            let targetUrl = (urlMatch && urlMatch[1].trim()) || fallbackUrl;
+            // 1. URL 추출 정규식 보완 (🔗LINK: 마커 뒤에 오는 모든 문자열 추출 후 정리)
+            const urlMatch = fullContent.match(/🔗LINK:([^\s]+)/);
+            let targetUrl = fallbackUrl;
+            if (urlMatch && urlMatch[1]) {
+                targetUrl = urlMatch[1].trim();
+            }
             
-            console.log(`📡 [Link Check] ${targetUrl.substring(0, 50)}...`);
+            console.log(`[Kakao] Target URL for chunk: ${targetUrl.substring(0, 70)}...`);
 
-            // 2. 본문 클리닝 (URL 마커 및 잔여 URL 텍스트 완벽 제거)
+            // 2. 텍스트 클리닝 (🔗LINK 전체 줄 및 기타 URL 제거)
             let cleanText = fullContent
-                .replace(/🔗LINK:.*(\n|$)/g, '') // 마커 포함 줄 전체 삭제
-                .replace(/http[s]?:\/\/[^\s\)]+/g, '') // 본문에 남은 다른 URL 삭제
+                .replace(/🔗LINK:[^\n]*\n?/g, '')
+                .replace(/http[s]?:\/\/[^\s\)]+/g, '')
                 .trim();
 
             if (!cleanText) return resolve({ success: true });
 
-            // 3. 카카오톡 메시지 구성
+            // 3. 템플릿 구성 (버튼이 누락되지 않도록 명확하게)
             const template = {
                 object_type: 'text',
                 text: (isFirst ? '📢 청약 통합 정밀 분석 리포트\n\n' : '') + cleanText,
@@ -93,12 +95,22 @@ async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
             };
 
             const req = https.request(options, (res) => {
-                if (res.statusCode === 200) resolve({ success: true });
-                else if (res.statusCode === 401) resolve({ success: false, code: 401 });
-                else {
-                    res.on('data', d => console.log('❌ Kakao Error:', d.toString()));
-                    resolve({ success: false });
-                }
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    if (res.statusCode === 200) {
+                        resolve({ success: true });
+                    } else if (res.statusCode === 401) {
+                        resolve({ success: false, code: 401 });
+                    } else {
+                        console.log(`❌ Kakao API Error: [${res.statusCode}] ${data}`);
+                        resolve({ success: false });
+                    }
+                });
+            });
+            req.on('error', (e) => {
+                console.log(`❌ Request Error: ${e.message}`);
+                resolve({ success: false });
             });
             req.write(body);
             req.end();
@@ -108,6 +120,7 @@ async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
     for (let i = 0; i < properties.length; i++) {
         let result = await sendRequest(properties[i], i === 0);
         if (!result.success && result.code === 401) {
+            console.log("🔄 토큰 갱신 중...");
             tokens = await refreshToken();
             result = await sendRequest(properties[i], i === 0);
         }
@@ -121,5 +134,5 @@ const arg = process.argv[3];
 const urlArg = process.argv[4];
 
 if (mode === 'send' && arg) {
-    sendMe(arg, urlArg).then(() => console.log('✅ 전송 성공')).catch(console.error);
+    sendMe(arg, urlArg).then(() => console.log('✅ 전송 완료')).catch(console.error);
 }
