@@ -51,19 +51,21 @@ async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
         return new Promise((resolve, reject) => {
             const fullContent = '[분석 대상]' + chunk;
             
-            // 1. URL 추출 및 마커 제거
-            const urlMatch = fullContent.match(/🔗LINK:(https?:\/\/[^\s\n]+)/);
+            // 1. URL 추출 (🔗LINK: 마커 뒤의 URL을 줄바꿈 전까지 캡처)
+            const urlMatch = fullContent.match(/🔗LINK:([^\s\n]+)/);
             let targetUrl = (urlMatch && urlMatch[1].trim()) || fallbackUrl;
             
-            // 2. 본문 클리닝 (URL 마커 제거 및 불필요한 공백 정리)
+            console.log(`📡 [Link Check] ${targetUrl.substring(0, 50)}...`);
+
+            // 2. 본문 클리닝 (URL 마커 및 잔여 URL 텍스트 완벽 제거)
             let cleanText = fullContent
-                .replace(/🔗LINK:.*\n?/g, '')
-                .replace(/http[s]?:\/\/[^\s\)]+/g, '')
+                .replace(/🔗LINK:.*(\n|$)/g, '') // 마커 포함 줄 전체 삭제
+                .replace(/http[s]?:\/\/[^\s\)]+/g, '') // 본문에 남은 다른 URL 삭제
                 .trim();
 
             if (!cleanText) return resolve({ success: true });
 
-            // 3. 카카오톡 '텍스트' 템플릿 - 링크가 메시지 전체에 걸림
+            // 3. 카카오톡 메시지 구성
             const template = {
                 object_type: 'text',
                 text: (isFirst ? '📢 청약 통합 정밀 분석 리포트\n\n' : '') + cleanText,
@@ -71,7 +73,12 @@ async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
                     web_url: targetUrl, 
                     mobile_web_url: targetUrl 
                 },
-                button_title: '상세 공고 보기'
+                buttons: [
+                    {
+                        title: '공고문 PDF 다운로드',
+                        link: { web_url: targetUrl, mobile_web_url: targetUrl }
+                    }
+                ]
             };
 
             const body = `template_object=${encodeURIComponent(JSON.stringify(template))}`;
@@ -88,7 +95,10 @@ async function sendMe(text, fallbackUrl = 'https://www.applyhome.co.kr') {
             const req = https.request(options, (res) => {
                 if (res.statusCode === 200) resolve({ success: true });
                 else if (res.statusCode === 401) resolve({ success: false, code: 401 });
-                else resolve({ success: false });
+                else {
+                    res.on('data', d => console.log('❌ Kakao Error:', d.toString()));
+                    resolve({ success: false });
+                }
             });
             req.write(body);
             req.end();

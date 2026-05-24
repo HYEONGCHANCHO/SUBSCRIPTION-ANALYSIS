@@ -10,7 +10,7 @@ async function orchestrate() {
     const targetDates = [datesJson.d1, datesJson.d2].filter(Boolean);
     const githubBase = contextManager.data.fixedInfo.githubBase;
 
-    const systemPrompt = contextManager.getSystemPrompt() + "\n상세 분석 항목: 위치, 공급유형, 입지 강점, 주의사항";
+    const systemPrompt = contextManager.getSystemPrompt() + "\n추가 지시: 위치, 유형, 입지 강점, 주의사항을 아주 상세히 분석하세요.";
     fs.writeFileSync(reportFile, "");
 
     const downloadsDir = path.join(process.cwd(), 'backend/data/downloads/CheongyakHome');
@@ -28,15 +28,21 @@ async function orchestrate() {
             const resultFile = path.join(resultDir, file.replace('.pdf', '.json'));
             
             let analysis;
-            // CI 환경에서는 항상 최신 링크 정보를 생성하기 위해 캐시 로직을 유연하게 적용
+            // 1. 캐시 체크 (기존 캐시가 상세 정보를 포함하지 않으면 무효화)
             if (fs.existsSync(resultFile)) {
                 try {
                     analysis = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
-                } catch(e) { analysis = null; }
+                    // 상세 정보가 없거나 모순되는 이전 캐시(isMatch만 있고 상세분석 없는 경우 등)는 재분석
+                    if (!analysis.상세분석 || !analysis.상세분석.입지강점) throw new Error('Incomplete cache');
+                } catch(e) { 
+                    analysis = null; 
+                    console.log(`   ♻️ [Re-analyzing] 상세 정보 보강을 위해 재분석: ${file}`);
+                }
             }
 
+            // 2. 분석 수행
             if (!analysis) {
-                console.log(`   🔍 [Analysis] ${file}...`);
+                console.log(`   🔍 [Deep Analysis] ${file}...`);
                 const text = execSync(`node extract_text.js "${filePath}" | head -c 15000`, { encoding: 'utf8' });
                 const fullPrompt = `${systemPrompt}\n\n[대상] ${file}\n[텍스트]\n${text}`;
                 const promptPath = path.join(process.cwd(), 'temp_prompt.txt');
@@ -48,19 +54,21 @@ async function orchestrate() {
                         analysis = JSON.parse(jsonMatch[0].replace(/```json/g, '').replace(/```/g, '').trim());
                         fs.writeFileSync(resultFile, JSON.stringify(analysis, null, 2));
                     }
-                } catch(e) { console.log(`   ⚠️ 에러: ${file}`); }
+                } catch(e) { console.log(`   ⚠️ 분석 에러: ${file}`); }
                 if (fs.existsSync(promptPath)) fs.unlinkSync(promptPath);
             }
 
             if (analysis) {
-                const isMatch = analysis.isMatch === true || (analysis.분석결과 && analysis.분석결과.includes("적격"));
+                // 판정 로직 강화 (텍스트 내용과 일치하도록)
+                const analysisResult = analysis.분석결과 || "";
+                const isMatch = analysis.isMatch === true || analysisResult.includes("적격") || analysisResult.includes("부합");
                 const statusStr = isMatch ? '✅ 조건부합' : '❌ 조건미달';
                 
-                // GitHub PDF 직접 다운로드 링크 생성 (인코딩 강화)
+                // GitHub 링크 생성 (URL 인코딩 철저)
                 const relativePdfPath = `backend/data/downloads/CheongyakHome/${datePath}/${file}`;
-                // raw.githubusercontent.com 주소를 사용하여 리디렉션 없이 바로 다운로드되도록 함
                 const repoPath = githubBase.replace('https://github.com/', '');
-                const downloadUrl = `https://raw.githubusercontent.com/${repoPath}/main/${relativePdfPath.split('/').map(encodeURIComponent).join('/')}`;
+                const encodedPath = relativePdfPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+                const downloadUrl = `https://raw.githubusercontent.com/${repoPath}/main/${encodedPath}`;
                 
                 const detail = analysis.상세분석 || {};
                 
@@ -72,8 +80,8 @@ async function orchestrate() {
                 entry += `• 요약: ${analysis.요약사유 || '내용 없음'}\n`;
                 entry += `• 강점: ${detail.입지강점 || detail.강점 || "공고문 참조"}\n`;
                 entry += `• 주의: ${detail.주의사항 || detail.단점 || "공고문 참조"}\n`;
-                // 마커와 URL 사이에 공백 없이 밀착시켜 파싱 오류 방지
-                entry += `🔗LINK:${downloadUrl}\n\n`;
+                // 링크가 유실되지 않도록 명확한 구분자 사용 및 줄바꿈 추가
+                entry += `\n🔗LINK:${downloadUrl}\n\n`;
                 fs.appendFileSync(reportFile, entry);
             }
         }
