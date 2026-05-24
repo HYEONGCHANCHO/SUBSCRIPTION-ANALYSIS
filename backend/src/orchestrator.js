@@ -24,9 +24,11 @@ async function orchestrate() {
         for (const file of files) {
             const filePath = path.join(dirPath, file);
             const resultDir = path.join(process.cwd(), 'backend/data/results/CheongyakHome', datePath);
+            if (!fs.existsSync(resultDir)) fs.mkdirSync(resultDir, { recursive: true });
             const resultFile = path.join(resultDir, file.replace('.pdf', '.json'));
             
             let analysis;
+            // CI 환경에서는 항상 최신 링크 정보를 생성하기 위해 캐시 로직을 유연하게 적용
             if (fs.existsSync(resultFile)) {
                 try {
                     analysis = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
@@ -34,7 +36,7 @@ async function orchestrate() {
             }
 
             if (!analysis) {
-                console.log(`   🔍 [Deep Analysis] ${file}...`);
+                console.log(`   🔍 [Analysis] ${file}...`);
                 const text = execSync(`node extract_text.js "${filePath}" | head -c 15000`, { encoding: 'utf8' });
                 const fullPrompt = `${systemPrompt}\n\n[대상] ${file}\n[텍스트]\n${text}`;
                 const promptPath = path.join(process.cwd(), 'temp_prompt.txt');
@@ -54,24 +56,23 @@ async function orchestrate() {
                 const isMatch = analysis.isMatch === true || (analysis.분석결과 && analysis.분석결과.includes("적격"));
                 const statusStr = isMatch ? '✅ 조건부합' : '❌ 조건미달';
                 
-                // GitHub PDF 직접 다운로드 링크 생성
+                // GitHub PDF 직접 다운로드 링크 생성 (인코딩 강화)
                 const relativePdfPath = `backend/data/downloads/CheongyakHome/${datePath}/${file}`;
-                const downloadUrl = `${githubBase}/blob/main/${encodeURI(relativePdfPath)}?raw=true`;
+                // raw.githubusercontent.com 주소를 사용하여 리디렉션 없이 바로 다운로드되도록 함
+                const repoPath = githubBase.replace('https://github.com/', '');
+                const downloadUrl = `https://raw.githubusercontent.com/${repoPath}/main/${relativePdfPath.split('/').map(encodeURIComponent).join('/')}`;
                 
                 const detail = analysis.상세분석 || {};
-                const location = detail.위치 || detail.지역 || "정보 없음";
-                const type = detail.공급유형 || detail.유형 || "정보 없음";
-                const strength = detail.입지강점 || detail.강점 || "공고문 참조";
-                const caution = detail.주의사항 || detail.단점 || "공고문 참조";
                 
                 let entry = `[분석 대상] ${file.replace('.pdf', '')}\n`;
                 entry += `• 판정: ${statusStr}\n`;
-                entry += `• 위치: ${location}\n`;
-                entry += `• 유형: ${type}\n`;
+                entry += `• 위치: ${detail.위치 || detail.지역 || "정보 없음"}\n`;
+                entry += `• 유형: ${detail.공급유형 || detail.유형 || "정보 없음"}\n`;
                 entry += `• 정보: ${analysis.면적 || '-'} / ${analysis.가격 || '-'}\n`;
                 entry += `• 요약: ${analysis.요약사유 || '내용 없음'}\n`;
-                entry += `• 강점: ${strength}\n`;
-                entry += `• 주의: ${caution}\n`;
+                entry += `• 강점: ${detail.입지강점 || detail.강점 || "공고문 참조"}\n`;
+                entry += `• 주의: ${detail.주의사항 || detail.단점 || "공고문 참조"}\n`;
+                // 마커와 URL 사이에 공백 없이 밀착시켜 파싱 오류 방지
                 entry += `🔗LINK:${downloadUrl}\n\n`;
                 fs.appendFileSync(reportFile, entry);
             }
