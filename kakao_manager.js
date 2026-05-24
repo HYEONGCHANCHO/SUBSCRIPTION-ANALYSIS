@@ -50,26 +50,22 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
         return new Promise((resolve, reject) => {
             const fullContent = '[분석 대상]' + chunk;
             
-            // 1. URL 추출 및 마커 제거
-            const urlMatch = fullContent.match(/🔗LINK:([^\s\n]+)/);
+            // URL 추출 (🔗공고문링크: 마커 뒤의 주소 캡처)
+            const urlMatch = fullContent.match(/🔗공고문링크:\s*([^\s\n]+)/);
             let targetUrl = (urlMatch && urlMatch[1].trim()) || fallbackUrl;
             
-            let cleanText = fullContent
-                .replace(/🔗LINK:[^\n]*\n?/g, '') // 링크 마커 줄 제거
-                .replace(/http[s]?:\/\/[^\s\)]+/g, '') // 잔여 URL 제거
-                .trim();
+            // 본문에서 마커 제거
+            let cleanText = fullContent.replace(/🔗공고문링크:.*\n?/g, '').trim();
+            
+            // [실제 링크 노출] 카카오톡 앱에서 자동 링크 인식을 위해 하단에 직접 추가
+            const textWithLink = cleanText + `\n\n📄 [실제 공고문 다운로드]\n${targetUrl}`;
 
-            if (!cleanText) return resolve({ success: true });
-
-            // 2. 'Text'형 템플릿 - 글자 수 제한이 넉넉하고 전체 클릭 가능
+            // '텍스트' 템플릿 - 가장 안전하고 글자 수 넉넉함
             const template = {
                 object_type: 'text',
-                text: (isFirst ? '📢 청약 통합 정밀 분석 리포트\n\n' : '') + cleanText,
-                link: { 
-                    web_url: targetUrl, 
-                    mobile_web_url: targetUrl 
-                },
-                button_title: '공고문 PDF 다운로드'
+                text: (isFirst ? '📢 사실 기반 정밀 분석 리포트\n\n' : '') + textWithLink,
+                link: { web_url: targetUrl, mobile_web_url: targetUrl },
+                button_title: '공고문 PDF 열기'
             };
 
             const body = `template_object=${encodeURIComponent(JSON.stringify(template))}`;
@@ -88,7 +84,6 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
                 res.on('data', d => data += d);
                 res.on('end', () => {
                     if (res.statusCode === 200) resolve({ success: true });
-                    else if (res.statusCode === 401) resolve({ success: false, code: 401 });
                     else {
                         console.log(`❌ Kakao API Error: [${res.statusCode}] ${data}`);
                         resolve({ success: false });
@@ -115,5 +110,5 @@ const mode = process.argv[2];
 const arg = process.argv[3];
 
 if (mode === 'send' && arg) {
-    sendMe(arg).then(() => console.log('✅ 전송 완료')).catch(console.error);
+    sendMe(arg).then(() => console.log('✅ 전송 성공')).catch(console.error);
 }
