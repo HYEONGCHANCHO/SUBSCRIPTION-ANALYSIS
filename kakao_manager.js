@@ -44,45 +44,32 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
     if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰 없음');
     let tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
 
-    // 단지별('[분석 대상]')로 메시지 분할
     const properties = text.split('[분석 대상]').filter(p => p.trim().length > 0);
 
     const sendRequest = (chunk, isFirst) => {
         return new Promise((resolve, reject) => {
             const fullContent = '[분석 대상]' + chunk;
             
-            // 1. URL 추출
+            // 1. URL 추출 및 마커 제거
             const urlMatch = fullContent.match(/🔗LINK:([^\s\n]+)/);
             let targetUrl = (urlMatch && urlMatch[1].trim()) || fallbackUrl;
             
-            // 2. 본문 클리닝 (본문에서 긴 URL을 제거하고 깔끔한 텍스트만 남김)
             let cleanText = fullContent
-                .replace(/🔗LINK:.*(\n|$)/g, '')
-                .replace(/http[s]?:\/\/[^\s\)]+/g, '')
+                .replace(/🔗LINK:[^\n]*\n?/g, '') // 링크 마커 줄 제거
+                .replace(/http[s]?:\/\/[^\s\)]+/g, '') // 잔여 URL 제거
                 .trim();
-            
-            // 제목 추출 (단지명)
-            const titleMatch = cleanText.match(/\[분석 대상\]\s*(.*)/);
-            const title = (titleMatch && titleMatch[1]) || '청약 분석 리포트';
-            const description = cleanText.replace(/\[분석 대상\].*\n?/, '').trim();
 
             if (!cleanText) return resolve({ success: true });
 
-            // 3. '피드' 템플릿 구성 (제목 클릭 시 이동 + 하단 버튼)
+            // 2. 'Text'형 템플릿 - 글자 수 제한이 넉넉하고 전체 클릭 가능
             const template = {
-                object_type: 'feed',
-                content: {
-                    title: title,
-                    description: description,
-                    image_url: '', // 이미지 없어도 작동하도록 구성
-                    link: { web_url: targetUrl, mobile_web_url: targetUrl }
+                object_type: 'text',
+                text: (isFirst ? '📢 청약 통합 정밀 분석 리포트\n\n' : '') + cleanText,
+                link: { 
+                    web_url: targetUrl, 
+                    mobile_web_url: targetUrl 
                 },
-                buttons: [
-                    {
-                        title: 'PDF 공고문 다운로드',
-                        link: { web_url: targetUrl, mobile_web_url: targetUrl }
-                    }
-                ]
+                button_title: '공고문 PDF 다운로드'
             };
 
             const body = `template_object=${encodeURIComponent(JSON.stringify(template))}`;
@@ -101,10 +88,10 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
                 res.on('data', d => data += d);
                 res.on('end', () => {
                     if (res.statusCode === 200) resolve({ success: true });
+                    else if (res.statusCode === 401) resolve({ success: false, code: 401 });
                     else {
                         console.log(`❌ Kakao API Error: [${res.statusCode}] ${data}`);
-                        // 피드 템플릿 실패 시 텍스트 템플릿으로 폴백
-                        sendTextFallback(tokens.access_token, (isFirst ? '📢 리포트\n\n' : '') + cleanText, targetUrl).then(resolve);
+                        resolve({ success: false });
                     }
                 });
             });
@@ -112,28 +99,6 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
             req.end();
         });
     };
-
-    function sendTextFallback(token, text, url) {
-        return new Promise((resolve) => {
-            const template = {
-                object_type: 'text',
-                text: text + '\n\n🔗 [PDF 다운로드]\n' + url.substring(0, 50) + '...', // 긴 URL 생략
-                link: { web_url: url, mobile_web_url: url },
-                button_title: '공고문 보기'
-            };
-            const body = `template_object=${encodeURIComponent(JSON.stringify(template))}`;
-            const options = {
-                hostname: 'kapi.kakao.com', path: '/v2/api/talk/memo/default/send', method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(body) }
-            };
-            const req = https.request(options, (res) => {
-                res.on('data', () => {});
-                res.on('end', () => resolve({ success: res.statusCode === 200 }));
-            });
-            req.write(body);
-            req.end();
-        });
-    }
 
     for (let i = 0; i < properties.length; i++) {
         let result = await sendRequest(properties[i], i === 0);
