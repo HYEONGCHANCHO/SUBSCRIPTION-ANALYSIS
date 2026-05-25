@@ -2,7 +2,6 @@ name: Daily Subscription Analysis
 
 on:
   schedule:
-    # 월~금 한국 시간 오전 6시 30분 (UTC 전날 21:30)
     - cron: "30 21 * * 0-4"
   workflow_dispatch:
 
@@ -17,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: "24"
           cache: "npm"
@@ -36,12 +35,9 @@ jobs:
 
       - name: Restore Gemini & Kakao Auth
         run: |
-          # Gemini CLI 설정
           mkdir -p ~/.gemini
           echo '${{ secrets.GEMINI_OAUTH_CREDS }}' > ~/.gemini/oauth_creds.json
           echo '{"security":{"auth":{"selectedType":"oauth-personal"}}}' > ~/.gemini/settings.json
-          
-          # 카카오톡 토큰 복구
           echo '${{ secrets.KAKAO_TOKEN_JSON }}' > kakao_token.json
 
       - name: Run Analysis
@@ -52,14 +48,23 @@ jobs:
           chmod +x auto-run.sh
           ./auto-run.sh
 
-      - name: Commit and Push Results (including PDFs)
+      - name: Debug - Check Report
+        run: |
+          echo "=== Daily Report Content ==="
+          if [ -f "daily_report.txt" ]; then
+            cat daily_report.txt
+          else
+            echo "daily_report.txt not found!"
+          fi
+
+      - name: Commit and Push Results
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add backend/data/results/
           git add backend/data/downloads/
           if ! git diff --cached --quiet; then
-            git commit -m "chore: auto-update analysis results and download notice PDFs [skip ci]"
+            git commit -m "chore: auto-update analysis results and PDFs [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
           else
             echo "No changes to commit."

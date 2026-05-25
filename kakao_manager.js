@@ -43,8 +43,16 @@ async function sendMe(text) {
     if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰 없음');
     let tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
 
-    // 단지별로 리포트 분할
-    const properties = text.split('[분석 대상]').filter(p => p.trim().length > 0);
+    // 단지별로 리포트 분할 (정규식 사용으로 정확한 분할)
+    const propertyChunks = text.split(/\[분석 대상\]/).filter(p => p.trim().length > 0);
+    
+    // 첫 번째 청크가 헤더인 경우 보존
+    let header = "";
+    let finalProperties = propertyChunks;
+    if (!text.trim().startsWith('[분석 대상]')) {
+        header = propertyChunks[0].trim();
+        finalProperties = propertyChunks.slice(1);
+    }
 
     const sendRequest = (chunk, isFirst) => {
         return new Promise((resolve, reject) => {
@@ -56,7 +64,7 @@ async function sendMe(text) {
 
             const template = {
                 object_type: 'text',
-                text: (isFirst ? '📢 [최종 청약 타당성 보고서]\n\n' : '') + cleanText + `\n\n📄 [공고문 PDF]\n${targetUrl}`,
+                text: (isFirst && header ? `${header}\n\n` : '') + cleanText + `\n\n📄 [공고문 PDF]\n${targetUrl}`,
                 link: { web_url: targetUrl, mobile_web_url: targetUrl },
                 button_title: 'PDF 공고문 열기'
             };
@@ -89,12 +97,19 @@ async function sendMe(text) {
         });
     };
 
-    for (let i = 0; i < properties.length; i++) {
-        let result = await sendRequest(properties[i], i === 0);
+    if (finalProperties.length === 0 && header) {
+        // 단지 분석 결과는 없으나 헤더(안내 문구 등)만 있는 경우 처리
+        console.log("ℹ️ 분석된 단지가 없어 헤더만 전송하거나 생략합니다.");
+    }
+
+    for (let i = 0; i < finalProperties.length; i++) {
+        let result = await sendRequest(finalProperties[i], i === 0);
         if (!result.success && result.code === 401) {
-            console.log("🔄 토큰 갱신 및 재시도...");
-            tokens = await refreshToken();
-            result = await sendRequest(properties[i], i === 0);
+            console.log("🔄 토큰 갱신 시도...");
+            try {
+                tokens = await refreshToken();
+                result = await sendRequest(finalProperties[i], i === 0);
+            } catch (e) { console.error("❌ 토큰 갱신 실패:", e); }
         }
         await new Promise(r => setTimeout(r, 1000));
     }
