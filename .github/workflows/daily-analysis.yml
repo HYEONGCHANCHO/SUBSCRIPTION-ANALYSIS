@@ -22,7 +22,8 @@ jobs:
         uses: actions/setup-node@v4.0.3
         with:
           node-version: "24"
-          cache: "npm"
+          # 캐시 서비스 장애를 피하기 위해 일시적으로 캐시 기능 비활성화
+          # cache: "npm" 
 
       - name: Install dependencies
         run: npm install
@@ -47,6 +48,7 @@ jobs:
           echo "SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL" > .env
           chmod +x auto-run.sh
           ./auto-run.sh
+        continue-on-error: true # 분석 중 오류가 발생해도 다음 리포트/로그 확인 단계로 진행
 
       - name: Debug - Check Report
         run: |
@@ -55,6 +57,7 @@ jobs:
             cat daily_report.txt
           else
             echo "daily_report.txt not found!"
+            ls -R backend/data/results/ # 결과 파일이라도 확인
           fi
 
       - name: Commit and Push Results
