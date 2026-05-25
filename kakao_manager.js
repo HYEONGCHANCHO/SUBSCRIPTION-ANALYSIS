@@ -20,7 +20,7 @@ function requestToken(postData) {
         };
         const req = https.request(options, (res) => {
             let data = '';
-            res.on('data', (chunk) => data += chunk);
+            res.on('data', d => data += d);
             res.on('end', () => {
                 const result = JSON.parse(data);
                 if (res.statusCode === 200) {
@@ -34,38 +34,31 @@ function requestToken(postData) {
                 } else reject(data);
             });
         });
-        req.on('error', reject);
         req.write(postData);
         req.end();
     });
 }
 
-async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBSCRIPTION-ANALYSIS') {
+async function sendMe(text) {
     if (!fs.existsSync(TOKEN_PATH)) throw new Error('토큰 없음');
     let tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
 
+    // 단지별로 리포트 분할
     const properties = text.split('[분석 대상]').filter(p => p.trim().length > 0);
 
     const sendRequest = (chunk, isFirst) => {
         return new Promise((resolve, reject) => {
             const fullContent = '[분석 대상]' + chunk;
-            
-            // URL 추출 (🔗공고문링크: 마커 뒤의 주소 캡처)
             const urlMatch = fullContent.match(/🔗공고문링크:\s*([^\s\n]+)/);
-            let targetUrl = (urlMatch && urlMatch[1].trim()) || fallbackUrl;
+            const targetUrl = (urlMatch && urlMatch[1].trim()) || 'https://www.applyhome.co.kr';
             
-            // 본문에서 마커 제거
-            let cleanText = fullContent.replace(/🔗공고문링크:.*\n?/g, '').trim();
-            
-            // [실제 링크 노출] 카카오톡 앱에서 자동 링크 인식을 위해 하단에 직접 추가
-            const textWithLink = cleanText + `\n\n📄 [실제 공고문 다운로드]\n${targetUrl}`;
+            const cleanText = fullContent.replace(/🔗공고문링크:.*\n?/g, '').trim();
 
-            // '텍스트' 템플릿 - 가장 안전하고 글자 수 넉넉함
             const template = {
                 object_type: 'text',
-                text: (isFirst ? '📢 사실 기반 정밀 분석 리포트\n\n' : '') + textWithLink,
+                text: (isFirst ? '📢 [최종 청약 타당성 보고서]\n\n' : '') + cleanText + `\n\n📄 [공고문 PDF]\n${targetUrl}`,
                 link: { web_url: targetUrl, mobile_web_url: targetUrl },
-                button_title: '공고문 PDF 열기'
+                button_title: 'PDF 공고문 열기'
             };
 
             const body = `template_object=${encodeURIComponent(JSON.stringify(template))}`;
@@ -84,8 +77,9 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
                 res.on('data', d => data += d);
                 res.on('end', () => {
                     if (res.statusCode === 200) resolve({ success: true });
+                    else if (res.statusCode === 401) resolve({ success: false, code: 401 });
                     else {
-                        console.log(`❌ Kakao API Error: [${res.statusCode}] ${data}`);
+                        console.log(`❌ 전송 실패: ${data}`);
                         resolve({ success: false });
                     }
                 });
@@ -98,6 +92,7 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
     for (let i = 0; i < properties.length; i++) {
         let result = await sendRequest(properties[i], i === 0);
         if (!result.success && result.code === 401) {
+            console.log("🔄 토큰 갱신 및 재시도...");
             tokens = await refreshToken();
             result = await sendRequest(properties[i], i === 0);
         }
@@ -108,7 +103,6 @@ async function sendMe(text, fallbackUrl = 'https://github.com/HYEONGCHANCHO/SUBS
 
 const mode = process.argv[2];
 const arg = process.argv[3];
-
 if (mode === 'send' && arg) {
-    sendMe(arg).then(() => console.log('✅ 전송 성공')).catch(console.error);
+    sendMe(arg).then(() => console.log('✅ 전송 완료')).catch(console.error);
 }
