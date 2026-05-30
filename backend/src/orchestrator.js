@@ -36,14 +36,26 @@ async function orchestrate() {
             
             let finalReport = "";
             if (isTextReliable) {
-                console.log(`   📝 [Mode: Text-Based] 2단계 분석을 수행합니다.`);
+                console.log(`   📝 [Mode: Text-Based] 핵심 문맥 추출 후 2단계 분석을 수행합니다.`);
+                
+                // 분양가 및 공급내역 키워드 주변 문맥 우선 추출 (Hallucination 방지)
+                const importantKeywords = ["공급금액", "분양가", "최고금액", "모집공고"];
+                let contextText = "";
+                importantKeywords.forEach(kw => {
+                    const index = rawText.indexOf(kw);
+                    if (index !== -1) {
+                        contextText += `\n...${rawText.substring(Math.max(0, index - 500), index + 3000)}...\n`;
+                    }
+                });
+                if (contextText.length < 5000) contextText = rawText.substring(0, 20000);
+
                 // Stage 1: 식별
-                const s1Prompt = `${contextManager.getStage1Prompt()}\n\n[텍스트]\n${rawText.substring(0, 30000)}`;
+                const s1Prompt = `${contextManager.getStage1Prompt()}\n\n[핵심 텍스트]\n${contextText}`;
                 fs.writeFileSync('temp_s1.txt', s1Prompt);
                 const s1Result = execSync(`gemini -y --raw-output < temp_s1.txt`, { encoding: 'utf8' });
                 
-                // Stage 2: 리포트
-                const s2Prompt = `${contextManager.getStage2Prompt()}\n\n### 식별정보\n${s1Result}\n\n### 공고문\n${rawText.substring(0, 30000)}`;
+                // Stage 2: 리포트 (추측 금지 지침 강화)
+                const s2Prompt = `${contextManager.getStage2Prompt()}\n\n### 식별정보\n${s1Result}\n\n### 발췌된 공고문 내용\n${contextText}\n\n⚠️ 주의: 제공된 텍스트에 없는 주택형이나 금액은 절대 지어내지 마세요. 확인이 불가능하면 반드시 '확인 불가'라고 적으세요.`;
                 fs.writeFileSync('temp_s2.txt', s2Prompt);
                 finalReport = execSync(`gemini -y --raw-output < temp_s2.txt`, { encoding: 'utf8' });
                 fs.unlinkSync('temp_s1.txt'); fs.unlinkSync('temp_s2.txt');
