@@ -33,6 +33,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@google/gemini-cli": "^0.44.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.0"
   }

@@ -40,9 +40,6 @@ jobs:
         # 캐시가 있어도 시스템 의존성(--with-deps)은 매번 확인하는 것이 안전함
         run: npx playwright install --with-deps chromium
 
-      - name: Install Gemini CLI
-        run: npm install -g @google/gemini-cli
-
       - name: Restore Gemini & Kakao Auth
         run: |
           mkdir -p ~/.gemini
