@@ -10,14 +10,15 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1 # npm install 시 자동 다운로드 방지
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 60 # 전체 작업을 최대 60분으로 제한 (6시간 방치 방지)
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # v4는 Node 20/24를 지원함
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,7 +29,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright Browsers
+      - name: Cache Playwright Browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Browsers & Deps
+        # 캐시가 있어도 시스템 의존성(--with-deps)은 매번 확인하는 것이 안전함
         run: npx playwright install --with-deps chromium
 
       - name: Install Gemini CLI
@@ -44,6 +53,7 @@ jobs:
       - name: Run Analysis
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DEBUG: pw:browser* # Playwright 브라우저 관련 로그 상세 출력
         run: |
           echo "SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL" > .env
           chmod +x auto-run.sh
