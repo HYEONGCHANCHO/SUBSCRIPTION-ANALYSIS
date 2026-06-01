@@ -31,11 +31,10 @@ jobs:
         run: npm install
 
       - name: Install Playwright System Dependencies
-        # 브라우저 실행에 필요한 최소한의 시스템 패키지만 먼저 설치합니다.
-        # playwright install-deps는 너무 많은 폰트를 설치하므로 직접 핵심 패키지만 설치하여 속도를 높입니다.
+        # Ubuntu 24.04(t64) 호환 패키지 리스트 적용
         run: |
           sudo apt-get update
-          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2
+          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0t64 libatk-bridge2.0-0 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64
 
       - name: Install Playwright Chromium
         # 시스템 패키지 설치 후 브라우저만 다운로드합니다.
