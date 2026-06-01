@@ -11,12 +11,12 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   CI: true
-  DEBIAN_FRONTEND: noninteractive # apt 설치 시 인터랙티브 팝업 방지
 
 jobs:
   analyze:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40 # 전체 타임아웃 단축 (문제가 생기면 빨리 종료되도록)
+    # 24.04(latest)의 패키지 충돌 및 설치 지연을 피하기 위해 22.04로 고정합니다.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,15 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright System Dependencies
-        # Ubuntu 24.04(t64) 호환 패키지 리스트 적용
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0t64 libatk-bridge2.0-0 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64
-
-      - name: Install Playwright Chromium
-        # 시스템 패키지 설치 후 브라우저만 다운로드합니다.
-        run: npx playwright install chromium
+      - name: Install Playwright Chromium & Deps
+        # 22.04에서는 공식 --with-deps 옵션이 매우 빠르고 안정적으로 작동합니다.
+        run: npx playwright install chromium --with-deps
 
       - name: Verify Gemini CLI
         run: npx gemini --version || echo "Gemini CLI not found"
