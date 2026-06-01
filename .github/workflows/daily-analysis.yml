@@ -11,11 +11,12 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   CI: true
+  DEBIAN_FRONTEND: noninteractive # apt 설치 시 인터랙티브 팝업 방지
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 40 # 전체 타임아웃 단축 (문제가 생기면 빨리 종료되도록)
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,13 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright Chromium & Deps
-        # 공식적으로 권장되는 CI 설치 방식입니다. 
-        # --with-deps를 포함하여 시스템 패키지와 브라우저를 한 번에 설치합니다.
-        run: npx playwright install chromium --with-deps
+      - name: Install Playwright System Dependencies
+        # 브라우저 실행에 필요한 최소한의 시스템 패키지만 먼저 설치합니다.
+        # playwright install-deps는 너무 많은 폰트를 설치하므로 직접 핵심 패키지만 설치하여 속도를 높입니다.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2
+
+      - name: Install Playwright Chromium
+        # 시스템 패키지 설치 후 브라우저만 다운로드합니다.
+        run: npx playwright install chromium
 
       - name: Verify Gemini CLI
-        run: npx gemini --version || echo "Gemini CLI not found in node_modules"
+        run: npx gemini --version || echo "Gemini CLI not found"
 
       - name: Restore Gemini & Kakao Auth
         run: |
