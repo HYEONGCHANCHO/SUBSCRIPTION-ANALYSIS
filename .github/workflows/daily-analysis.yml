@@ -34,11 +34,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
+          # playwright 버전을 포함하여 정확한 캐싱 수행
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
-      - name: Install Playwright Browsers & Deps
-        # 캐시가 있어도 시스템 의존성(--with-deps)은 매번 확인하는 것이 안전함
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright System Deps
+        # 브라우저 다운로드와 별개로 시스템 의존성만 먼저 설치 (이미 설치되어 있으면 빠르게 통과)
+        run: npx playwright install-deps chromium
+
+      - name: Install Playwright Chromium
+        # 캐시가 있으면 다운로드를 건너뛰고, 없으면 다운로드만 수행
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
 
       - name: Restore Gemini & Kakao Auth
         run: |
