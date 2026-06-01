@@ -10,8 +10,7 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-  CI: true # 터미널 인터랙티브 모드 방지
+  CI: true
 
 jobs:
   analyze:
@@ -30,21 +29,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Cache Playwright Browsers
-        id: playwright-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright System Deps
-        run: npx playwright install-deps chromium
-
-      - name: Install Playwright Chromium
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium
+      - name: Install Playwright Chromium & Deps
+        # 공식적으로 권장되는 CI 설치 방식입니다. 
+        # --with-deps를 포함하여 시스템 패키지와 브라우저를 한 번에 설치합니다.
+        run: npx playwright install chromium --with-deps
 
       - name: Verify Gemini CLI
         run: npx gemini --version || echo "Gemini CLI not found in node_modules"
