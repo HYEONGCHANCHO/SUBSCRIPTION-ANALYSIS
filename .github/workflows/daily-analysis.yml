@@ -16,7 +16,7 @@ jobs:
   analyze:
     # 24.04(latest)의 패키지 충돌 및 설치 지연을 피하기 위해 22.04로 고정합니다.
     runs-on: ubuntu-22.04
-    timeout-minutes: 40
+    timeout-minutes: 90
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,12 +41,9 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright Browsers & Deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium
-
-      - name: Install Playwright System Deps
-        run: npx playwright install-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Verify Gemini CLI
         run: npx gemini --version || echo "Gemini CLI not found"
