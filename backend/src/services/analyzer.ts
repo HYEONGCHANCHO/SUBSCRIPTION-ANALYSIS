@@ -90,80 +90,92 @@ export class Analyzer {
     }
 
     private extractPrice(text: string): number | undefined {
-        // "공급금액", "분양가", "총 분양가" 등 다양한 키워드 뒤에 오는 금액을 찾도록 보강
-        // 금액은 숫자와 콤마로 이루어지고, 원, 만원, 억원 등으로 끝날 수 있음.
-        // 혹은 단순히 숫자만 있는 경우도 고려
-        const priceMatches = text.matchAll(/(?:공급금액|분양가|총 분양가|총분양가|공급가격|분양 가격)\D*?([\d,\s]+)(?:원|만원|억원)?/gi);
         let prices: number[] = [];
 
-        for (const match of priceMatches) {
-            let priceStr = match[1].replace(/,|\s/g, ''); // 콤마와 공백 제거
+        // 1. "공급금액", "분양가" 등 키워드 다음에 오는 금액 및 단위 찾기
+        const keywordPriceMatches = text.matchAll(/(?:공급금액|분양가|총 분양가|총분양가|공급가격|분양 가격)\s*[:\-\s]*([\d,\s]+)\s*(원|만원|억원)?/gi);
+        for (const match of keywordPriceMatches) {
+            let priceStr = match[1].replace(/,|\s/g, '');
             let price = parseInt(priceStr);
 
             if (isNaN(price)) continue;
 
-            // 단위 처리 (매치된 전체 문자열에서 단위 확인)
-            const unit = (match[0] || '').toLowerCase();
+            const unit = (match[2] || '').toLowerCase(); // 단위 부분만 참조
             if (unit.includes('억원')) price *= 100000000;
             else if (unit.includes('만원')) price *= 10000;
+            // '원'은 변환 없음
 
             prices.push(price);
         }
         
-        // 추가적으로 테이블 형태에서 직접 금액만 뽑는 경우 (단위가 명시되지 않은 순수 금액)
-        // 500,030,000 와 같은 패턴 찾기
-        const barePriceMatches = text.matchAll(/(\d{1,3}(?:,\d{3}){2,3})/g); // 수억 ~ 수백억 단위 숫자 패턴
+        // 2. 테이블 형태에서 직접 금액만 뽑는 경우 (단위가 명시되지 않은 순수 금액)
+        // 이 경우는 주변에 '공급금액' 등의 키워드가 없지만 숫자가 큰 경우
+        // 예: 288,500,000
+        const barePriceMatches = text.matchAll(/(\d{1,3}(?:,\d{3}){2,3})/g);
         for (const match of barePriceMatches) {
             let priceStr = match[1].replace(/,/g, '');
             let price = parseInt(priceStr);
-            if (!isNaN(price)) prices.push(price);
+            if (!isNaN(price) && price > 10000000) { // 1천만원 이상의 큰 숫자만 유효한 분양가로 간주
+                 // 주변에 "억", "만원" 등의 명시적 단위가 없으면 원으로 간주 (기본값)
+                prices.push(price);
+            }
         }
 
-        // 추출된 금액 중 가장 낮은 금액을 반환 (다양한 타입 중 최저가를 보통 관심 있어 하므로)
+        // 추출된 금액 중 가장 낮은 금액을 반환
         if (prices.length > 0) {
-            return Math.min(...prices.filter(p => p > 10000000)); // 너무 작은 금액(오기)은 제외하고 1천만원 이상만
+            return Math.min(...prices.filter(p => p > 10000000)); // 너무 작은 금액 필터링
         }
 
         return undefined;
     }
 
     private extractDueDate(text: string): string | undefined {
-        // "청약 접수", "접수 마감", "당첨자 발표" 등에서 날짜 추출
-        // YYYY.MM.DD 또는 YYYY-MM-DD 형식 (날짜 범위에서 마지막 날짜 우선)
-        const dateRegex = /(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})/g;
-        
         let foundDates: string[] = [];
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // 오늘 날짜의 0시 0분 0초로 설정
 
-        // "청약 접수" 키워드 주변에서 날짜 범위 추출 시도
-        const applyDateMatch = text.match(/청약\s*접수\s*(?:기간)?\s*:\s*(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})\s*(?:[~\-]\s*(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2}))?/);
-        if (applyDateMatch) {
-            if (applyDateMatch[2]) foundDates.push(applyDateMatch[2]); // 범위가 있으면 마지막 날짜
-            else foundDates.push(applyDateMatch[1]); // 범위가 없으면 단일 날짜
+        // 1. "청약 접수" 키워드 주변에서 날짜 범위 추출 시도 (YYYY.MM.DD)
+        // 시작일 ~ 종료일 형태에서 종료일을 우선적으로 찾음
+        const applyDateRangeMatch = text.match(/청약\s*접수\s*(?:기간)?\s*[:\-\s]*(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})\s*[~\-]\s*(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})/);
+        if (applyDateRangeMatch && applyDateRangeMatch[2]) {
+            foundDates.push(applyDateRangeMatch[2]); // 범위의 마지막 날짜
+        } else {
+            // 범위가 없는 단일 청약 접수일
+            const applyDateSingleMatch = text.match(/청약\s*접수\s*(?:일|기간)?\s*[:\-\s]*(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})/);
+            if (applyDateSingleMatch) foundDates.push(applyDateSingleMatch[1]);
         }
 
-        // 그 외 "마감", "발표" 키워드 주변에서 날짜 추출 시도 (가장 최신 날짜를 선택하기 위해)
-        const generalDateMatches = text.matchAll(/(?:마감|발표|일시|기한)\D*?(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})/g);
+
+        // 2. "당첨자 발표일" 추출 시도 (가장 중요한 마감일 중 하나)
+        const announceDateMatch = text.match(/(?:당첨자\s*발표일|발표일)\s*[:\-\s]*(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})/);
+        if (announceDateMatch) {
+            foundDates.push(announceDateMatch[1]);
+        }
+
+        // 3. 그 외 "마감", "일시", "기한" 키워드 주변에서 날짜 추출 시도
+        const generalDateMatches = text.matchAll(/(?:마감|일시|기한)\D*?(\d{4}[\.\-\/]\d{2}[\.\-\/]\d{2})/g);
         for (const match of generalDateMatches) {
             foundDates.push(match[1]);
         }
 
-        // 찾은 날짜들 중 가장 미래의 날짜(즉, 가장 최신 마감일일 가능성)를 선택
         if (foundDates.length > 0) {
-            // 중복 제거 및 유효한 날짜로 파싱
-            const uniqueDates = Array.from(new Set(foundDates)).map(d => new Date(d.replace(/\./g, '-')));
-            const futureDates = uniqueDates.filter(d => !isNaN(d.getTime()) && d >= new Date()); // 유효하고 미래 날짜만
+            const uniqueDates = Array.from(new Set(foundDates)).map(d => {
+                const date = new Date(d.replace(/\./g, '-'));
+                return isNaN(date.getTime()) ? null : date;
+            }).filter(d => d !== null) as Date[];
+
+            // 유효하고 현재 또는 미래 날짜만 필터링
+            const futureOrCurrentDates = uniqueDates.filter(d => d && d >= currentDate);
             
-            if (futureDates.length > 0) {
-                futureDates.sort((a, b) => a.getTime() - b.getTime());
-                const latestDate = futureDates[0]; // 가장 가까운 미래 날짜
-                return `${latestDate.getFullYear()}.${String(latestDate.getMonth() + 1).padStart(2, '0')}.${String(latestDate.getDate()).padStart(2, '0')}`;
-            } else {
+            if (futureOrCurrentDates.length > 0) {
+                futureOrCurrentDates.sort((a, b) => a.getTime() - b.getTime());
+                const closestFutureDate = futureOrCurrentDates[0]; // 가장 가까운 미래/현재 날짜
+                return `${closestFutureDate.getFullYear()}.${String(closestFutureDate.getMonth() + 1).padStart(2, '0')}.${String(closestFutureDate.getDate()).padStart(2, '0')}`;
+            } else if (uniqueDates.length > 0) {
                 // 미래 날짜가 없으면 가장 최근(과거) 날짜라도 반환 (이미 마감된 공고 처리용)
                 uniqueDates.sort((a, b) => b.getTime() - a.getTime());
-                const pastDate = uniqueDates[0];
-                if (!isNaN(pastDate.getTime())) {
-                    return `${pastDate.getFullYear()}.${String(pastDate.getMonth() + 1).padStart(2, '0')}.${String(pastDate.getDate()).padStart(2, '0')}`;
-                }
+                const latestPastDate = uniqueDates[0];
+                return `${latestPastDate.getFullYear()}.${String(latestPastDate.getMonth() + 1).padStart(2, '0')}.${String(latestPastDate.getDate()).padStart(2, '0')}`;
             }
         }
         
