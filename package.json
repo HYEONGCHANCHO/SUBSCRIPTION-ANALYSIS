@@ -13,6 +13,7 @@
     "scrape": "npx ts-node backend/src/main.ts ALL SCRAPE",
     "scrape:home": "npx ts-node backend/src/main.ts HOME SCRAPE",
     "scrape:lh": "npx ts-node backend/src/main.ts LH SCRAPE",
+    "analyze:ai": "npx ts-node backend/src/analyze-cli.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,6 +21,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@types/pdf-parse": "^1.1.5",
     "axios": "1.13.6",
     "better-sqlite3": "^12.8.0",
@@ -31,6 +33,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@google/gemini-cli": "^0.44.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.0"
   }

@@ -5,6 +5,9 @@ export PATH="$PATH:$(npm config get prefix)/bin"
 REPORT_FILE="daily_report.txt"
 TIMEOUT_LIMIT="30m" # 각 단계별 최대 30분 제한
 
+# GitHub Actions에서는 AI 분석 비활성화
+export RUN_AI_ANALYSIS="false"
+
 # 2. 분석 타겟 날짜 확보
 ANALYSIS_DATES=$(node scripts/get-analysis-dates.js)
 D1=$(echo $ANALYSIS_DATES | cut -d',' -f1)
@@ -18,8 +21,8 @@ echo "🌐 데이터 수집 시작..."
 timeout $TIMEOUT_LIMIT npm run scrape || echo "⚠️ 수집 단계에서 타임아웃 발생 (일부 데이터만 처리)"
 
 # 4. 간소화된 분석 실행 (Gemini 분석 대신)
-echo "🤖 간소화된 정보 추출 가동..."
-timeout $TIMEOUT_LIMIT node backend/src/orchestrator.js || echo "⚠️ 정보 추출 단계에서 타임아웃 발생"
+echo "🤖 정보 추출/분석 가동 (AI 분석 ${RUN_AI_ANALYSIS})..."
+timeout $TIMEOUT_LIMIT npx ts-node backend/src/orchestrator.js || echo "⚠️ 정보 추출/분석 단계에서 타임아웃 발생"
 
 # 5. 카카오톡 전송
 if [ -f "kakao_manager.js" ] && [ -f "$REPORT_FILE" ]; then

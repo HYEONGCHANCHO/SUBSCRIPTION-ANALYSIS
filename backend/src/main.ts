@@ -2,8 +2,7 @@ import { initializeDatabase } from './database/schema';
 import { HomeScraper } from './scrapers/home-scraper';
 import { LHScraper } from './scrapers/lh-scraper';
 import { IScraper } from './scrapers/scraper-interface';
-import { Analyzer } from './services/analyzer';
-import * as readline from 'readline';
+import * as readline from 'readline'; // Analyzer 임포트 제거
 
 // 선명한 표준 무지개 색상 (256 색상 코드)
 const rainbowColors = [
@@ -97,55 +96,10 @@ async function main() {
             try { await scraper.scrape(); } catch (e) {}
         }));
 
-        // SCRAPE_ONLY 모드인 경우 여기서 종료
-        if (process.argv.includes('SCRAPE') || process.argv.includes('scrape')) {
-            readline.cursorTo(process.stdout, 0, activeScrapers.length + 1);
-            process.stdout.write('\x1b[?25h');
-            console.log('\n\x1b[1;32m✅ 데이터 수집 완료 (분석 제외)\x1b[0m\n');
-            return;
-        }
-
-        // 4. 분석 단계 통합
+        // 스크래핑 완료 후 분석 로직 제거
         readline.cursorTo(process.stdout, 0, activeScrapers.length + 1);
         process.stdout.write('\x1b[?25h'); // 커서 복구
-        console.log('\n\x1b[1;36m🔍 수집 데이터 분석 시작...\x1b[0m');
-        
-        const analyzer = new Analyzer();
-        const results = await analyzer.analyzeAll();
-
-        const passed = results.filter((r) => r.isPassed);
-        const filteredCount = results.length - passed.length;
-
-        console.log(`\n\x1b[1m📊 분석 통계\x1b[0m`);
-        console.log(`- 전체 공고: ${results.length}건`);
-        console.log(`- 조건 부합: \x1b[1;32m${passed.length}건\x1b[0m`);
-        console.log(`- 조건 제외: \x1b[31m${filteredCount}건\x1b[0m\n`);
-
-        if (passed.length > 0) {
-            console.log(`\x1b[1;32m[추천 공고 리스트]\x1b[0m`);
-            passed.forEach((r, i) => {
-                console.log(`\x1b[1m${i + 1}. [${r.site}] ${r.title}\x1b[0m`);
-                console.log(`   └ 면적: ${r.area || '미정'}㎡ | 분양가: ${r.price ? (r.price / 100000000).toFixed(1) + '억' : '미정'} | 기한: ${r.dueDate || '미정'}`);
-                if (r.summary) console.log(`   └ 요약: ${r.summary.substring(0, 100)}...`);
-                console.log('');
-            });
-        }
-
-        console.log('\x1b[1;32m✅ 수집 및 분석 작업 완료\x1b[0m\n');
-
-        // daily_report.txt 생성 로직 추가
-        const fs = require('fs');
-        let report = `📢 *청약 통합 분석 리포트*\n\n`;
-        report += `📊 *분석 통계*\n- 전체 공고: ${results.length}건\n- 조건 부합: ${passed.length}건\n- 조건 제외: ${filteredCount}건\n\n`;
-        
-        if (passed.length > 0) {
-            report += `✅ *추천 공고*\n`;
-            passed.forEach((r, i) => {
-                report += `${i + 1}. [${r.site}] *${r.title}*\n`;
-                report += `   └ 면적: ${r.area || '미정'}㎡ | 분양가: ${r.price ? (r.price / 100000000).toFixed(1) + '억' : '미정'} | 기한: ${r.dueDate || '미정'}\n`;
-            });
-        }
-        fs.writeFileSync('daily_report.txt', report);
+        console.log('\n\x1b[1;32m✅ 데이터 수집 완료\x1b[0m\n'); 
 
     } catch (error) {
         process.stdout.write('\x1b[?25h');
