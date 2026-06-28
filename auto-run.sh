@@ -14,7 +14,7 @@ D1=$(echo $ANALYSIS_DATES | cut -d',' -f1)
 D2=$(echo $ANALYSIS_DATES | cut -d',' -f2)
 
 echo "🎯 분석 타겟: $D1, $D2"
-echo "{\"d1\": \"$D1\", \"d2\": \"$D2\"}" > dates.json
+printf '{"d1": "%s", "d2": "%s"}' "$D1" "$D2" > dates.json # 수정된 부분
 
 # 3. 데이터 수집 (Playwright 타임아웃 방지)
 echo "🌐 데이터 수집 시작..."
