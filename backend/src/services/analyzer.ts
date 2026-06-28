@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import { getTargetDates } from '../utils/date-utils';
 const pdf = require('pdf-parse');
 
 export interface AnalysisResult {
@@ -17,61 +16,15 @@ export interface AnalysisResult {
 }
 
 export class Analyzer {
-    private baseDownloadDir: string = path.resolve(process.cwd(), 'backend/data/downloads');
-    private processedHashes: Set<string> = new Set();
-
-    async analyzeAll(): Promise<AnalysisResult[]> {
-        const targetDates = getTargetDates(3);
-        const results: AnalysisResult[] = [];
-        const files = this.getAllFiles(this.baseDownloadDir);
-        
-        for (const file of files) {
-            if (path.extname(file).toLowerCase() !== '.pdf' && path.extname(file).toLowerCase() !== '.hwpx' && path.extname(file).toLowerCase() !== '.hwp') continue;
-
-            // 파일 경로에서 날짜 추출 (YYYY/MM/DD 형태인지 확인)
-            const pathParts = file.split(path.sep);
-            const datePart = pathParts.slice(-4, -1).join('-'); // YYYY-MM-DD
-            if (!targetDates.includes(datePart)) continue;
-
-            const contentHash = this.getFileHash(file);
-            if (this.processedHashes.has(contentHash)) continue;
-            this.processedHashes.add(contentHash);
-
-            const result = await this.analyzeFile(file);
-            if (result) results.push(result);
-        }
-
-        return results;
-    }
-
-    private getAllFiles(dir: string): string[] {
-        let results: string[] = [];
-        const list = fs.readdirSync(dir);
-        list.forEach((file) => {
-            const filePath = path.join(dir, file);
-            const stat = fs.statSync(filePath);
-            if (stat && stat.isDirectory()) {
-                results = results.concat(this.getAllFiles(filePath));
-            } else {
-                results.push(filePath);
-            }
-        });
-        return results;
-    }
-
-    private getFileHash(filePath: string): string {
-        const fileBuffer = fs.readFileSync(filePath);
-        return crypto.createHash('sha256').update(fileBuffer).digest('hex');
-    }
-
-    private async analyzeFile(filePath: string): Promise<AnalysisResult | null> {
+    async analyzeFile(filePath: string): Promise<AnalysisResult | null> {
         const dataBuffer = fs.readFileSync(filePath);
         const fileName = path.basename(filePath, '.pdf');
         const isLH = filePath.includes('/LH/');
         const site = isLH ? 'LH' : '청약홈';
 
         try {
-            const data = await pdf(dataBuffer);
+            // PDF 파싱 시 최대 5페이지만 읽도록 설정
+            const data = await pdf(dataBuffer, { max: 5 }); 
             const text = data.text;
 
             // 1. 데이터 추출 (면적, 가격, 기한)
@@ -79,7 +32,7 @@ export class Analyzer {
             const price = this.extractPrice(text);
             const dueDate = this.extractDueDate(text);
 
-            // 2. 필터링 조건 적용
+            // 2. 필터링 조건 적용 (기존 로직 유지)
             let isPassed = true;
             let reason = '';
 
@@ -144,9 +97,11 @@ export class Analyzer {
         let priceStr = match[1].replace(/,/g, '');
         let price = parseInt(priceStr);
         
-        if (text.includes('억원')) price *= 100000000;
-        else if (text.includes('만원')) price *= 10000;
-        
+        // 텍스트 내에 "억원"이 명시적으로 포함된 경우에만 억 단위로 처리
+        if (match[0].includes('억원')) price *= 100000000;
+        else if (match[0].includes('만원')) price *= 10000; // "만원"이 포함된 경우
+        // "원" 단위는 그대로 사용
+
         return price;
     }
 
